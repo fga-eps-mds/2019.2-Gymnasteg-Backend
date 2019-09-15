@@ -1,0 +1,21 @@
+{
+  "name": "2019.2-Gymnasteg-Backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/fga-eps-mds/2019.2-Gymnasteg-Backend.git",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.18.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2",
+    "sequelize-cli": "^5.5.1",
+    "sucrase": "^3.10.1"
+  }
+}

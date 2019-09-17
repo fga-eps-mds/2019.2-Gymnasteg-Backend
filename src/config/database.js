@@ -8,6 +8,6 @@ module.exports = {
   define: {
     timestamp: true,
     underscored: true,
-    underscoredAll: true
-  }
+    underscoredAll: true,
+  },
 };

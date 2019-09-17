@@ -1,28 +1,26 @@
-'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('bancas', {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primarykey:true,
+        primarykey: true,
         type: Sequelize.INTEGER,
       },
 
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
 
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: queryInterface => {
     return queryInterface.dropTable('bancas');
-  }
+  },
 };

@@ -4,10 +4,17 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primarykey: true,
+        primaryKey: true,
         type: Sequelize.INTEGER,
       },
-
+      num_banca: {
+        allowNull: false,
+        type: Sequelize.DATEONLY,
+      },
+      horario: {
+        allowNull: false,
+        type: Sequelize.TIME,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -5,7 +5,7 @@ class Banca extends Model {
     super.init(
       {
         num_banca: Sequelize.INTEGER,
-        dataEvento: Sequelize.DATEONLY,
+        data_evento: Sequelize.DATEONLY,
         horario: Sequelize.TIME,
       },
       {

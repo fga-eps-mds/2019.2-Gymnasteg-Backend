@@ -9,6 +9,10 @@ module.exports = {
       },
       num_banca: {
         allowNull: false,
+        type: Sequelize.INTEGER,
+      },
+      data_evento: {
+        allowNull: false,
         type: Sequelize.DATEONLY,
       },
       horario: {
@@ -19,7 +23,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
-
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -7,13 +7,20 @@ class Judge extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        password: Sequelize.STRING,
+        password: Sequelize.VIRTUAL,
+        password_hash: Sequelize.STRING,
         coordinator: Sequelize.BOOLEAN
       },
       {
         sequelize
       }
     );
+
+    this.addHook("beforeSave", async judge => {
+      if (judge.password) {
+        judge.password_hash = await bcrypt.hash(judge.password, 8);
+      }
+    });
 
     return this;
   }

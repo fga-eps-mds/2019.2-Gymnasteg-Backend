@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import Banca from '../models/Banca';
 
 class BancaController {
@@ -16,6 +17,21 @@ class BancaController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      num_banca: Yup.number()
+        .required()
+        .positive()
+        .integer(),
+      data_evento: Yup.date()
+        .required()
+        .min(new Date()),
+      horario: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Falha na validação' });
+    }
+
     const {
       id,
       num_banca,
@@ -23,6 +39,7 @@ class BancaController {
       horario,
       fk_modalidade_id,
     } = await Banca.create(req.body);
+
     return res.json({
       id,
       num_banca,

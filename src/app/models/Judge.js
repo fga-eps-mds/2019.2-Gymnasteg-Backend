@@ -26,7 +26,7 @@ class Judge extends Model {
   }
 
   checkPassword(password) {
-    return bcrypt.compare(password, this.password);
+    return bcrypt.compare(password, this.password_hash);
   }
 }
 

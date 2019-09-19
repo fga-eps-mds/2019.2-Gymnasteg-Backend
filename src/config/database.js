@@ -1,6 +1,6 @@
 module.exports = {
   dialect: 'postgres',
-  host: 'localhost',
+  host: 'db',
   username: 'username',
   password: 'pgpassword',
   database: 'db',
@@ -8,6 +8,6 @@ module.exports = {
   define: {
     timestamp: true,
     underscored: true,
-    underscoredAll: true,
-  },
+    underscoredAll: true
+  }
 };

@@ -56,6 +56,10 @@ class BancaController {
         .required()
         .min(new Date()),
       horario: Yup.string().required(),
+      fk_modalidade_id: Yup.number()
+        .integer()
+        .positive()
+        .required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -95,27 +99,34 @@ class BancaController {
         .integer()
         .min(1),
       sexo: Yup.string().required(),
-      data_evento: Yup.date()
-        .required()
-        .min(new Date()),
+      data_evento: Yup.date().required(),
       horario: Yup.string().required(),
+      fk_modalidade_id: Yup.number()
+        .integer()
+        .positive()
+        .required(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res
-        .status(400)
-        .json({ error: `Falha na validação ${new Date()}` });
+      return res.status(400).json({ error: 'Falha de Validação' });
+    }
+
+    const { id } = req.body;
+
+    const banca = await Banca.findByPk(id);
+
+    if (!banca) {
+      return res.json({ error: 'Banca não existe' });
     }
 
     const {
-      id,
       num_banca,
       qtd_arbitro,
       sexo,
       data_evento,
       horario,
       fk_modalidade_id,
-    } = await Banca.update(req.body);
+    } = await banca.update(req.body);
 
     return res.json({
       id,

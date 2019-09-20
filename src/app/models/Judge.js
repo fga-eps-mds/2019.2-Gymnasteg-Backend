@@ -1,5 +1,4 @@
 import Sequelize, { Model } from "sequelize";
-import bcrypt from "bcryptjs";
 
 class Judge extends Model {
   static init(sequelize) {
@@ -7,8 +6,7 @@ class Judge extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        password: Sequelize.VIRTUAL,
-        password_hash: Sequelize.STRING,
+        password: Sequelize.STRING,
         coordinator: Sequelize.BOOLEAN
       },
       {
@@ -16,17 +14,11 @@ class Judge extends Model {
       }
     );
 
-    this.addHook("beforeSave", async judge => {
-      if (judge.password) {
-        judge.password_hash = await bcrypt.hash(judge.password, 8);
-      }
-    });
-
     return this;
   }
 
   checkPassword(password) {
-    return bcrypt.compare(password, this.password_hash);
+    return password === this.password;
   }
 }
 

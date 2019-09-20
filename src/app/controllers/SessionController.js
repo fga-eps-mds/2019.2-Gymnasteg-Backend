@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import * as Yup from "yup";
 
 import Judge from "../models/Judge";
+import authConfig from "../../config/auth";
 
 class SessionController {
   async store(req, res) {
@@ -20,17 +21,21 @@ class SessionController {
 
     const judge = await Judge.findOne({ where: { email } });
 
-    if (!judge) {
-      return res.status(401).json({ error: "Usuário não encontrado." });
+    if (!(await judge.checkPassword(password)) || !judge) {
+      return res.status(401).json({ error: "Usuário e/ou senha incorretos." });
     }
 
-    if (!(await judge.checkPassword(password))) {
-      return res.status(401).json({ error: "Senha incorreta." });
-    }
+    const { id, name, coordinator } = judge;
 
-    const { name } = judge;
-
-    return res.json({ judge: { name, email } });
+    return res.json({
+      judge: {
+        name,
+        coordinator
+      },
+      token: jwt.sign({ id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn
+      })
+    });
   }
 }
 

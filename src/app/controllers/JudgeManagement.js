@@ -13,5 +13,8 @@ module.exports = {
     } catch (error) {
       return res.status(401).send();
     }
+  },
+  async update(req, res) {
+    return res.json({ ok: true });
   }
 };

@@ -14,4 +14,7 @@ routes.post("/createJudge", JudgeManagement.create);
 routes.post("/sessions", SessionController.store);
 
 routes.use(authMiddleware);
+
+routes.put("/users", JudgeManagement.update);
+
 export default routes;

@@ -11,6 +11,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
+      qtd_arbitro: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
+      sexo: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       data_evento: {
         allowNull: false,
         type: Sequelize.DATEONLY,

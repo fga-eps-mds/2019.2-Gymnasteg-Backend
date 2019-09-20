@@ -5,6 +5,8 @@ class Banca extends Model {
     super.init(
       {
         num_banca: Sequelize.INTEGER,
+        qtd_arbitro: Sequelize.INTEGER,
+        sexo: Sequelize.STRING,
         data_evento: Sequelize.DATEONLY,
         horario: Sequelize.TIME,
       },

@@ -11,8 +11,11 @@ routes.get('/', (req, res) => {
 
 routes.post('/modalidades', ModalidadeController.store);
 routes.get('/modalidades', ModalidadeController.index);
+routes.put('/modalidades', ModalidadeController.update);
 
-routes.post('/bancas', BancaController.store);
 routes.get('/bancas', BancaController.index);
+routes.get('/bancas/:id', BancaController.show);
+routes.post('/bancas', BancaController.store);
+routes.put('/bancas', BancaController.update);
 
 export default routes;

@@ -9,8 +9,9 @@ routes.get('/', (req, res) => {
   return res.json({ message: 'Hello Word' });
 });
 
-routes.post('/modalidades', ModalidadeController.store);
 routes.get('/modalidades', ModalidadeController.index);
+routes.get('/modalidades/:id', ModalidadeController.show);
+routes.post('/modalidades', ModalidadeController.store);
 routes.put('/modalidades', ModalidadeController.update);
 
 routes.get('/bancas', BancaController.index);

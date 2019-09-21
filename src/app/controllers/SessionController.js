@@ -21,7 +21,7 @@ class SessionController {
 
     const judge = await Judge.findOne({ where: { email } });
 
-    if (!(await judge.checkPassword(password)) || !judge) {
+    if (!judge || !(await judge.checkPassword(password))) {
       return res.status(401).json({ error: "Usuário e/ou senha incorretos." });
     }
 

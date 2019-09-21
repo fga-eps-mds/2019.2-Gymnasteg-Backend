@@ -62,3 +62,6 @@ typings/
 
 #dados
 dados/
+
+#authentication secrets
+src/config/auth.js

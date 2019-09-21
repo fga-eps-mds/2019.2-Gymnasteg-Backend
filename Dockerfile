@@ -15,7 +15,7 @@ WORKDIR /app
 
 ADD . /app
 
-RUN yarn
+RUN yarn install
 
 EXPOSE 3000
 

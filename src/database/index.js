@@ -2,10 +2,11 @@ import Sequelize from 'sequelize';
 
 import Banca from '../app/models/Banca';
 import Modalidade from '../app/models/Modalidade';
+import Judge from '../app/models/Judge';
 
 import databaseConfig from '../config/database';
 
-const models = [Banca, Modalidade];
+const models = [Banca, Modalidade, Judge];
 
 class Database {
   constructor() {

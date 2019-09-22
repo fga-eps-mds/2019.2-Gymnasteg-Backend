@@ -21,10 +21,10 @@ services:
     depends_on:
       - db
     command: bash -c "npx sequelize db:migrate && yarn dev"
-    # build: ./
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
+    build: ./
+    volumes:
+      - .:/app
+      - /app/node_modules
     ports:
       - '3000:3000'
     networks:

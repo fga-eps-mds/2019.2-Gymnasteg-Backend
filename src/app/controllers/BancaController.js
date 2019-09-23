@@ -27,7 +27,9 @@ class BancaController {
     });
 
     if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Falha de Validação' });
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
     }
 
     const { id } = req.params;
@@ -63,7 +65,9 @@ class BancaController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação' });
+      return res.status(400).json({
+        error: 'Falha na validação das informações',
+      });
     }
 
     const {
@@ -108,7 +112,9 @@ class BancaController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha de Validação' });
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
     }
 
     const { id } = req.body;

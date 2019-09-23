@@ -22,6 +22,7 @@ routes.get('/bancas', BancaController.index);
 routes.get('/bancas/:id', BancaController.show);
 routes.post('/bancas', BancaController.store);
 routes.put('/bancas', BancaController.update);
+
 routes.post('/createJudge', JudgeManagement.create);
 routes.post('/sessions', SessionController.store);
 

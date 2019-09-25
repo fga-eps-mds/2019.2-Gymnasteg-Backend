@@ -24,11 +24,6 @@ module.exports = {
         type: Sequelize.STRING,
       },
 
-      password_hash: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-
       coordinator: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

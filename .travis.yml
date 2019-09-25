@@ -10,10 +10,10 @@ services:
 
 install:
   - docker network create network-api
+  - docker-compose up --build -d
 
 script:
-- docker-compose up --build -d
-  # - docker exec -it frontend yarn test
+  - docker exec -it web yarn test
   # - docker run -e CI=true frontend yarn run test
 
 after_script:

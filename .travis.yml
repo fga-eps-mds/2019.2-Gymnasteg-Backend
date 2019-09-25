@@ -5,16 +5,20 @@ node_js:
 
 sudo: required
 
-services:
-  - docker
+# services:
+#   - docker
 
-install:
-  - docker network create network-api
-  - docker-compose up --build -d
+before_scrip:
+  - yarn install
+
+# install:
+#   - docker network create network-api
+#   - docker-compose up --build -d
 
 script:
-  - docker exec -it web yarn test
-  # - docker run -e CI=true frontend yarn run test
+  # - docker exec -it web yarn test
+  - yarn test
 
 after_script:
-  - docker-compose down
+#   - docker-compose down
+  - yarn posttest

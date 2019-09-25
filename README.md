@@ -1,4 +1,5 @@
 ![Gymnasteg](./logo.png)
+
 O projeto Gymnasteg surgiu como uma proposta de melhorar o processo de votação em campeonatos de ginastica de pequeno porte. O objetivo do projeto é fazer com o que usuário tenha uma boa experiencia no processo de votação e a efetividade na votação.
 
 

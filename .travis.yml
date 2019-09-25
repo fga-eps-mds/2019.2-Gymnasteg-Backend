@@ -1,0 +1,20 @@
+language: node_js
+
+node_js:
+  - 10
+
+sudo: required
+
+services:
+  - docker
+
+install:
+  - docker network create network-api
+
+script:
+- docker-compose up --build -d
+  # - docker exec -it frontend yarn test
+  # - docker run -e CI=true frontend yarn run test
+
+after_script:
+  - docker-compose down

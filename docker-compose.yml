@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
   db:
@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: username
       POSTGRES_PASSWORD: pgpassword
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - network-api
     volumes:
@@ -26,7 +26,7 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - '3333:3333'
     networks:
       - network-api
 networks:

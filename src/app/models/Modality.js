@@ -1,10 +1,10 @@
 import { Model, Sequelize } from 'sequelize';
 
-class Modalidade extends Model {
+class Modality extends Model {
   static init(sequelize) {
     super.init(
       {
-        tipo: Sequelize.STRING,
+        type: Sequelize.STRING,
       },
       {
         sequelize,
@@ -15,4 +15,4 @@ class Modalidade extends Model {
   }
 }
 
-export default Modalidade;
+export default Modality;

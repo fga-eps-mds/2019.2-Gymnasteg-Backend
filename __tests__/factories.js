@@ -1,27 +1,35 @@
 import { factory } from 'factory-girl';
 import faker from 'faker';
 
-import Banca from '../src/app/models/Banca';
-import Modalidade from '../src/app/models/Modalidade';
+import Stand from '../src/app/models/Stand';
+import Modality from '../src/app/models/Modality';
+import Coordinator from '../src/app/models/Coordinator';
 
-factory.define('Banca', Banca, {
-  num_banca: faker.random.number({
+factory.define('Stand', Stand, {
+  num_stand: faker.random.number({
     options: {
       min: 1,
     },
   }),
-  qtd_arbitro: faker.random.number({
+  qtd_judge: faker.random.number({
     options: {
       min: 1,
     },
   }),
-  sexo: faker.lorem.word(),
-  data_evento: faker.date.future(2),
-  horario: '12:00:00',
+  sex_modality: faker.lorem.word(),
+  category_age: faker.lorem.word(),
+  date_event: faker.date.future(2),
+  horary: '12:00:00',
 });
 
-factory.define('Modalidade', Modalidade, {
-  tipo: faker.lorem.word(),
+factory.define('Modality', Modality, {
+  type: faker.lorem.word(),
+});
+
+factory.define('Coordinator', Coordinator, {
+  email: faker.internet.email(),
+  name: faker.name.findName(),
+  password_hash: faker.internet.password(),
 });
 
 export default factory;

@@ -1,21 +1,22 @@
 import * as Yup from 'yup';
-import Banca from '../models/Banca';
+import Stand from '../models/Stand';
 
-class BancaController {
+class StandController {
   async index(req, res) {
-    const bancas = await Banca.findAll({
+    const stands = await Stand.findAll({
       attributes: [
         'id',
-        'num_banca',
-        'qtd_arbitro',
-        'sexo',
-        'data_evento',
-        'horario',
-        'fk_modalidade_id',
+        'num_stand',
+        'qtd_judge',
+        'sex_modality',
+        'category_age',
+        'date_event',
+        'horary',
+        'fk_modality_id',
       ],
     });
 
-    return res.json(bancas);
+    return res.json(stands);
   }
 
   async show(req, res) {
@@ -33,32 +34,31 @@ class BancaController {
     }
 
     const { id } = req.params;
-    const banca = await Banca.findByPk(id);
+    const stand = await Stand.findByPk(id);
 
-    if (!banca) {
+    if (!stand) {
       return res.status(400).json({ error: 'Banca não existe' });
     }
 
-    return res.json(banca);
+    return res.json(stand);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      num_banca: Yup.number()
+      num_stand: Yup.number()
         .required()
         .positive()
         .integer(),
-      qtd_arbitro: Yup.number()
+      qtd_judge: Yup.number()
         .required()
         .positive()
         .integer()
         .min(1),
-      sexo: Yup.string().required(),
-      data_evento: Yup.date()
-        .required()
-        .min(new Date()),
-      horario: Yup.string().required(),
-      fk_modalidade_id: Yup.number()
+      sex_modality: Yup.string().required(),
+      category_age: Yup.string().required(),
+      date_event: Yup.date().required(),
+      horary: Yup.string().required(),
+      fk_modality_id: Yup.number()
         .integer()
         .positive()
         .required(),
@@ -72,40 +72,43 @@ class BancaController {
 
     const {
       id,
-      num_banca,
-      qtd_arbitro,
-      sexo,
-      data_evento,
-      horario,
-      fk_modalidade_id,
-    } = await Banca.create(req.body);
+      num_stand,
+      qtd_judge,
+      sex_modality,
+      category_age,
+      date_event,
+      horary,
+      fk_modality_id,
+    } = await Stand.create(req.body);
 
     return res.json({
       id,
-      num_banca,
-      qtd_arbitro,
-      sexo,
-      data_evento,
-      horario,
-      fk_modalidade_id,
+      num_stand,
+      qtd_judge,
+      sex_modality,
+      category_age,
+      date_event,
+      horary,
+      fk_modality_id,
     });
   }
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      num_banca: Yup.number()
+      num_stand: Yup.number()
         .required()
         .positive()
         .integer(),
-      qtd_arbitro: Yup.number()
+      qtd_judge: Yup.number()
         .required()
         .positive()
         .integer()
         .min(1),
-      sexo: Yup.string().required(),
-      data_evento: Yup.date().required(),
-      horario: Yup.string().required(),
-      fk_modalidade_id: Yup.number()
+      sex_modality: Yup.string().required(),
+      category_age: Yup.string().required(),
+      date_event: Yup.date().required(),
+      horary: Yup.string().required(),
+      fk_modality_id: Yup.number()
         .integer()
         .positive()
         .required(),
@@ -119,31 +122,33 @@ class BancaController {
 
     const { id } = req.body;
 
-    const banca = await Banca.findByPk(id);
+    const stand = await Stand.findByPk(id);
 
-    if (!banca) {
+    if (!stand) {
       return res.json({ error: 'Banca não existe' });
     }
 
     const {
-      num_banca,
-      qtd_arbitro,
-      sexo,
-      data_evento,
-      horario,
-      fk_modalidade_id,
-    } = await banca.update(req.body);
+      num_stand,
+      qtd_judge,
+      sex_modality,
+      category_age,
+      date_event,
+      horary,
+      fk_modality_id,
+    } = await stand.update(req.body);
 
     return res.json({
       id,
-      num_banca,
-      qtd_arbitro,
-      sexo,
-      data_evento,
-      horario,
-      fk_modalidade_id,
+      num_stand,
+      qtd_judge,
+      sex_modality,
+      category_age,
+      date_event,
+      horary,
+      fk_modality_id,
     });
   }
 }
 
-export default new BancaController();
+export default new StandController();

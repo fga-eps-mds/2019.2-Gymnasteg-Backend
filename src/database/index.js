@@ -1,12 +1,13 @@
 import Sequelize from 'sequelize';
 
-import Banca from '../app/models/Banca';
-import Modalidade from '../app/models/Modalidade';
+import Stand from '../app/models/Stand';
+import Modality from '../app/models/Modality';
+import Coordinator from '../app/models/Coordinator';
 import Judge from '../app/models/Judge';
 
 import databaseConfig from '../config/database';
 
-const models = [Banca, Modalidade, Judge];
+const models = [Stand, Modality, Judge, Coordinator];
 
 class Database {
   constructor() {

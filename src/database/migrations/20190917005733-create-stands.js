@@ -1,29 +1,33 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('bancas', {
+    return queryInterface.createTable('stands', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      num_banca: {
+      num_stand: {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      qtd_arbitro: {
+      qtd_judge: {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
-      sexo: {
+      sex_modality: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      data_evento: {
+      category_age: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      date_event: {
         allowNull: false,
         type: Sequelize.DATEONLY,
       },
-      horario: {
+      horary: {
         allowNull: false,
         type: Sequelize.TIME,
       },
@@ -39,6 +43,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('bancas');
+    return queryInterface.dropTable('stands');
   },
 };

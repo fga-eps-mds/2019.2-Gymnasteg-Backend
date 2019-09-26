@@ -1,8 +1,8 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('bancas', 'fk_modalidade_id', {
+    return queryInterface.addColumn('stands', 'fk_modality_id', {
       type: Sequelize.INTEGER,
-      references: { model: 'modalidades', key: 'id' },
+      references: { model: 'modalities', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL',
       allowNull: true,
@@ -10,6 +10,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.removeColumn('bancas', 'fk_modalidade_id');
+    return queryInterface.removeColumn('stands', 'fk_modalities_id');
   },
 };

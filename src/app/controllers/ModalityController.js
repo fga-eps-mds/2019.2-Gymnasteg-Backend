@@ -1,13 +1,14 @@
 import * as Yup from 'yup';
 
-import Modalidade from '../models/Modalidade';
+import Modality from '../models/Modality';
 
-class ModalidadeController {
+class ModalityController {
   async index(req, res) {
-    const modalidades = await Modalidade.findAll({
-      attributes: ['id', 'tipo'],
+    const modality = await Modality.findAll({
+      attributes: ['id', 'type'],
     });
-    return res.json(modalidades);
+
+    return res.json(modality);
   }
 
   async show(req, res) {
@@ -23,28 +24,29 @@ class ModalidadeController {
     }
 
     const { id } = req.params;
-    const modalidade = await Modalidade.findByPk(id);
+    const modality = await Modality.findByPk(id);
 
-    if (!modalidade) {
+    if (!modality) {
       return res.status(400).json({ error: 'Modalidade não existe' });
     }
 
-    return res.json(modalidade);
+    return res.json(modality);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      tipo: Yup.string().required(),
+      type: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { id, tipo } = await Modalidade.create(req.body);
+    const { id, type } = await Modality.create(req.body);
+
     return res.json({
       id,
-      tipo,
+      type,
     });
   }
 
@@ -54,7 +56,7 @@ class ModalidadeController {
         .positive()
         .integer()
         .required(),
-      tipo: Yup.string().required(),
+      type: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -63,18 +65,18 @@ class ModalidadeController {
 
     const { id } = req.body;
 
-    const modalidade = await Modalidade.findByPk(id);
+    const modality = await Modality.findByPk(id);
 
-    if (!modalidade) {
+    if (!modality) {
       return res.json({ error: 'Modalidade não existe' });
     }
 
-    const { tipo } = await modalidade.update(req.body);
+    const { type } = await modality.update(req.body);
     return res.json({
       id,
-      tipo,
+      type,
     });
   }
 }
 
-export default new ModalidadeController();
+export default new ModalityController();

@@ -63,5 +63,8 @@ typings/
 #dados
 dados/
 
+#datas test
+__tests__/database.sqlite
+
 #authentication secrets
 src/config/auth.js

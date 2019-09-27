@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Stand from '../models/Stand';
+import Athlete from '../models/Athlete';
 
 class StandController {
   async index(req, res) {
@@ -34,7 +35,15 @@ class StandController {
     }
 
     const { id } = req.params;
-    const stand = await Stand.findByPk(id);
+    const stand = await Stand.findByPk(id, {
+      include: [
+        {
+          model: Athlete,
+          as: 'athletes',
+          attributes: ['id', 'name', 'email'],
+        },
+      ],
+    });
 
     if (!stand) {
       return res.status(400).json({ error: 'Banca não existe' });
@@ -70,27 +79,9 @@ class StandController {
       });
     }
 
-    const {
-      id,
-      num_stand,
-      qtd_judge,
-      sex_modality,
-      category_age,
-      date_event,
-      horary,
-      fk_modality_id,
-    } = await Stand.create(req.body);
+    const stand = await Stand.create(req.body);
 
-    return res.json({
-      id,
-      num_stand,
-      qtd_judge,
-      sex_modality,
-      category_age,
-      date_event,
-      horary,
-      fk_modality_id,
-    });
+    return res.json(stand);
   }
 
   async update(req, res) {

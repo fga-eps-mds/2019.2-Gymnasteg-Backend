@@ -16,6 +16,14 @@ class Athlete extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsToMany(models.Stand, {
+      through: 'standAthletes',
+      as: 'stands',
+      foreignKey: 'fk_athlete_id',
+    });
+  }
 }
 
 export default Athlete;

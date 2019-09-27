@@ -1,6 +1,6 @@
-import Judge from "../models/Judge";
-import Database from "../../database";
-import PasswordGenerator from "password-generator";
+import Judge from '../models/Judge';
+import Database from '../../database';
+import PasswordGenerator from 'password-generator';
 
 module.exports = {
   async create(req, res) {
@@ -11,10 +11,13 @@ module.exports = {
       await Judge.create({ name, email, password: generatedPassword });
       return res.status(201).json({ password: generatedPassword });
     } catch (error) {
-      return res.status(401).send();
+      if (error.errors[0].validatorKey === 'not_unique') {
+        return res.status(409).send('Árbitro já cadastrado.');
+      }
+      return res.status(500).send('Não foi possível cadastrar o árbitro.');
     }
   },
   async update(req, res) {
     return res.json({ ok: true });
-  }
+  },
 };

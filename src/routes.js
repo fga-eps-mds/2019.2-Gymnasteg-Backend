@@ -12,10 +12,10 @@ routes.get('/', (req, res) => {
   return res.json({ message: 'Hello Word' });
 });
 
-routes.get('/modality', ModalityController.index);
-routes.get('/modality/:id', ModalityController.show);
-routes.post('/modality', ModalityController.store);
-routes.put('/modality', ModalityController.update);
+routes.get('/modalities', ModalityController.index);
+routes.get('/modalities/:id', ModalityController.show);
+routes.post('/modalities', ModalityController.store);
+routes.put('/modalities', ModalityController.update);
 
 routes.post('/coordinators', CoordinatorController.store);
 

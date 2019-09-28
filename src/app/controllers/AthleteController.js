@@ -1,10 +1,18 @@
 import * as Yup from 'yup';
 import Athlete from '../models/Athlete';
+import Stand from '../models/Stand';
 
 class AthleteController {
   async index(req, res) {
     const athlete = await Athlete.findAll({
       attributes: ['id', 'name', 'email', 'gender', 'date_born'],
+      include: [
+        {
+          model: Stand,
+          as: 'stands',
+          through: { attributes: [] },
+        },
+      ],
     });
 
     return res.json(athlete);
@@ -24,7 +32,15 @@ class AthleteController {
     }
 
     const { id } = req.params;
-    const athlete = await Athlete.findByPk(id);
+    const athlete = await Athlete.findByPk(id, {
+      include: [
+        {
+          model: Stand,
+          as: 'stands',
+          through: { attributes: [] },
+        },
+      ],
+    });
 
     if (!athlete) {
       return res.status(400).json({ error: 'Atleta não existe.' });
@@ -47,7 +63,16 @@ class AthleteController {
       });
     }
 
-    const athlete = await Athlete.create(req.body);
+    const { stand, ...data } = req.body;
+
+    const athlete = await Athlete.create(data);
+
+    try {
+      await athlete.setStands(stand);
+    } catch (err) {
+      await athlete.destroy();
+      return res.status(500).json({ error: 'Falha' });
+    }
 
     return res.json(athlete);
   }

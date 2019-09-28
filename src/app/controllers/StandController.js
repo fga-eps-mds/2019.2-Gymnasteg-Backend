@@ -15,6 +15,14 @@ class StandController {
         'horary',
         'fk_modality_id',
       ],
+      include: [
+        {
+          model: Athlete,
+          as: 'athletes',
+          attributes: ['id', 'name', 'email'],
+          through: { attributes: [] },
+        },
+      ],
     });
 
     return res.json(stands);
@@ -41,6 +49,7 @@ class StandController {
           model: Athlete,
           as: 'athletes',
           attributes: ['id', 'name', 'email'],
+          through: { attributes: [] },
         },
       ],
     });

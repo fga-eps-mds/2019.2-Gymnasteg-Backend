@@ -51,6 +51,39 @@ class AthleteController {
 
     return res.json(athlete);
   }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string().required(),
+      gender: Yup.string().required(),
+      date_born: Yup.date().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.body;
+
+    const athlete = await Athlete.findByPk(id);
+
+    if (!athlete) {
+      return res.json({ error: 'Atleta não exite.' });
+    }
+
+    const { name, email, gender, date_born } = await athlete.update(req.body);
+
+    return res.json({
+      id,
+      name,
+      email,
+      gender,
+      date_born,
+    });
+  }
 }
 
 export default new AthleteController();

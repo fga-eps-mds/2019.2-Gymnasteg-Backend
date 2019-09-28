@@ -1,12 +1,10 @@
 import { Router } from 'express';
 import JudgeManagement from './app/controllers/JudgeManagement';
 import SessionController from './app/controllers/SessionController';
-
-import authMiddleware from './app/middlewares/auth';
-
 import ModalityController from './app/controllers/ModalityController';
 import StandController from './app/controllers/StandController';
 import CoordinatorController from './app/controllers/CoordinatorController';
+import AthleteController from './app/controllers/AthleteController';
 
 const routes = new Router();
 
@@ -30,5 +28,8 @@ routes.post('/createJudge', JudgeManagement.create);
 routes.post('/sessions', SessionController.store);
 
 routes.put('/users', JudgeManagement.update);
+
+routes.get('/athletes', AthleteController.index);
+routes.get('/athletes/:id', AthleteController.show);
 
 export default routes;

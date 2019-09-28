@@ -31,5 +31,6 @@ routes.put('/users', JudgeManagement.update);
 
 routes.get('/athletes', AthleteController.index);
 routes.get('/athletes/:id', AthleteController.show);
+routes.post('/athletes', AthleteController.store);
 
 export default routes;

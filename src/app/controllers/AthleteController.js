@@ -28,7 +28,7 @@ class AthleteController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações.' });
+        .json({ error: 'Falha na validação das informações!' });
     }
 
     const { id } = req.params;
@@ -43,7 +43,7 @@ class AthleteController {
     });
 
     if (!athlete) {
-      return res.status(400).json({ error: 'Atleta não existe.' });
+      return res.status(400).json({ error: 'Atleta não existe!' });
     }
 
     return res.json(athlete);
@@ -59,20 +59,21 @@ class AthleteController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: 'Falha na validação das informações.',
+        error: 'Falha na validação das informações!',
       });
     }
 
-    const { stand, ...data } = req.body;
+    const athleteExist = await Athlete.findOne({
+      where: { email: req.body.email },
+    });
 
-    const athlete = await Athlete.create(data);
-
-    try {
-      await athlete.setStands(stand);
-    } catch (err) {
-      await athlete.destroy();
-      return res.status(500).json({ error: 'Falha' });
+    if (athleteExist) {
+      return res.status(400).json({
+        error: 'Atleta com e-mail já cadastrado!',
+      });
     }
+
+    const athlete = await Athlete.create(req.body);
 
     return res.json(athlete);
   }

@@ -12,12 +12,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: 'stands', key: 'id' },
+        onUpdate: 'CASCATE',
       },
 
       fk_athlete_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: { model: 'athletes', key: 'id' },
+        onUpdate: 'CASCATE',
       },
 
       created_at: {

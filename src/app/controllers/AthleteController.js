@@ -63,16 +63,7 @@ class AthleteController {
       });
     }
 
-    const { stand, ...data } = req.body;
-
-    const athlete = await Athlete.create(data);
-
-    try {
-      await athlete.setStands(stand);
-    } catch (err) {
-      await athlete.destroy();
-      return res.status(500).json({ error: 'Falha' });
-    }
+    const athlete = await Athlete.create(req.body);
 
     return res.json(athlete);
   }

@@ -4,10 +4,11 @@ import Stand from '../app/models/Stand';
 import Modality from '../app/models/Modality';
 import Coordinator from '../app/models/Coordinator';
 import Judge from '../app/models/Judge';
+import Athlete from '../app/models/Athlete';
 
 import databaseConfig from '../config/database';
 
-const models = [Stand, Modality, Judge, Coordinator];
+const models = [Stand, Modality, Judge, Coordinator, Athlete];
 
 class Database {
   constructor() {

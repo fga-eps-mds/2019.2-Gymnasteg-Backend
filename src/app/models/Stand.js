@@ -20,6 +20,11 @@ class Stand extends Model {
 
   static associate(models) {
     this.belongsTo(models.Modality, { foreignKey: 'fk_modality_id' });
+    this.belongsToMany(models.Athlete, {
+      through: 'standAthletes',
+      as: 'athletes',
+      foreignKey: 'fk_stand_id',
+    });
   }
 }
 

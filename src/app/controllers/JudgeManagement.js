@@ -1,6 +1,6 @@
+import PasswordGenerator from 'password-generator';
 import Judge from '../models/Judge';
 import Database from '../../database';
-import PasswordGenerator from 'password-generator';
 
 module.exports = {
   async create(req, res) {

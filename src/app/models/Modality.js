@@ -5,6 +5,7 @@ class Modality extends Model {
     super.init(
       {
         type: Sequelize.STRING,
+        url_image: Sequelize.STRING,
       },
       {
         sequelize,

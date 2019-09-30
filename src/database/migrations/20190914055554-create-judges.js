@@ -24,10 +24,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
 
-      coordinator: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      judge_type: {
         allowNull: false,
+        type: Sequelize.ENUM,
+        values: ['Execution', 'Difficulty', 'Execution and Difficulty'],
       },
 
       created_at: {

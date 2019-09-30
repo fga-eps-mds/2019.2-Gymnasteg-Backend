@@ -1,4 +1,4 @@
-import Sequelize, { Model } from "sequelize";
+import Sequelize, { Model } from 'sequelize';
 
 class Judge extends Model {
   static init(sequelize) {
@@ -7,10 +7,14 @@ class Judge extends Model {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
-        coordinator: Sequelize.BOOLEAN
+        judge_type: Sequelize.ENUM(
+          'Execution',
+          'Difficulty',
+          'Execution and Difficulty'
+        ),
       },
       {
-        sequelize
+        sequelize,
       }
     );
 

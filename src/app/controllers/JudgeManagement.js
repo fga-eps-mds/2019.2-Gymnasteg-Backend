@@ -20,20 +20,20 @@ module.exports = {
 
   async create(req, res) {
     const { name, email, judge_type } = req.body;
-    
+
     try {
       await Database.connection.sync;
-      
+
       const generatedPassword = PasswordGenerator(12, true);
-      
+
       const { id } = await Judge.create({
         name,
         email,
         password: generatedPassword,
         judge_type,
       });
-      
-      return res.status(201).json({id, password: generatedPassword });
+
+      return res.status(201).json({ id, password: generatedPassword });
     } catch (error) {
       try {
         if (error.errors[0].validatorKey === 'not_unique') {

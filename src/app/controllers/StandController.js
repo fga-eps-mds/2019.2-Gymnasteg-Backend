@@ -26,7 +26,7 @@ class StandController {
         {
           model: Judge,
           as: 'judges',
-          attributes: ['id', 'name', 'email', 'coordinator'],
+          attributes: ['id', 'name', 'email', 'judge_type'],
           through: { attributes: [] },
         },
       ],
@@ -61,7 +61,7 @@ class StandController {
         {
           model: Judge,
           as: 'judges',
-          attributes: ['id', 'name', 'email', 'coordinator'],
+          attributes: ['id', 'name', 'email', 'judge_type'],
           through: { attributes: [] },
         },
       ],

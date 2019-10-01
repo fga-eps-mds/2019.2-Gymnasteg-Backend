@@ -7,7 +7,11 @@ class Judge extends Model {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
-        coordinator: Sequelize.BOOLEAN,
+        judge_type: Sequelize.ENUM(
+          'Execution',
+          'Difficulty',
+          'Execution and Difficulty'
+        ),
       },
       {
         sequelize,

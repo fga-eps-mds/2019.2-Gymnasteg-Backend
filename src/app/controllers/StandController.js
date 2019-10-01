@@ -26,7 +26,7 @@ class StandController {
         {
           model: Judge,
           as: 'judges',
-          attributes: ['name','email','coordinator'],
+          attributes: ['id', 'name', 'email', 'coordinator'],
           through: { attributes: [] },
         },
       ],
@@ -61,7 +61,7 @@ class StandController {
         {
           model: Judge,
           as: 'judges',
-          attributes: ['name','email','coordinator'],
+          attributes: ['id', 'name', 'email', 'coordinator'],
           through: { attributes: [] },
         },
       ],
@@ -101,13 +101,13 @@ class StandController {
       });
     }
 
-    const {judges, athletes, ...data } = req.body;
+    const { judges, athletes, ...data } = req.body;
 
     const stand = await Stand.create(data);
-    
+
     stand.setAthletes(athletes);
     stand.setJudges(judges);
-    
+
     return res.json(stand);
   }
 

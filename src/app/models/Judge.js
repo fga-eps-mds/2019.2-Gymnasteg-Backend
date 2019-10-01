@@ -1,4 +1,4 @@
-import Sequelize, { Model } from "sequelize";
+import Sequelize, { Model } from 'sequelize';
 
 class Judge extends Model {
   static init(sequelize) {
@@ -7,10 +7,10 @@ class Judge extends Model {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.STRING,
-        coordinator: Sequelize.BOOLEAN
+        coordinator: Sequelize.BOOLEAN,
       },
       {
-        sequelize
+        sequelize,
       }
     );
 
@@ -23,7 +23,7 @@ class Judge extends Model {
       as: 'stands',
       foreignKey: 'fk_judge_id',
     });
-   }
+  }
 
   checkPassword(password) {
     return password === this.password;

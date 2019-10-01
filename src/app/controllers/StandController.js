@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import Stand from '../models/Stand';
 import Athlete from '../models/Athlete';
+import Judge from '../models/Judge';
 
 class StandController {
   async index(req, res) {
@@ -20,6 +21,12 @@ class StandController {
           model: Athlete,
           as: 'athletes',
           attributes: ['id', 'name', 'email'],
+          through: { attributes: [] },
+        },
+        {
+          model: Judge,
+          as: 'judges',
+          attributes: ['name','email','coordinator'],
           through: { attributes: [] },
         },
       ],
@@ -49,6 +56,12 @@ class StandController {
           model: Athlete,
           as: 'athletes',
           attributes: ['id', 'name', 'email'],
+          through: { attributes: [] },
+        },
+        {
+          model: Judge,
+          as: 'judges',
+          attributes: ['name','email','coordinator'],
           through: { attributes: [] },
         },
       ],
@@ -88,8 +101,13 @@ class StandController {
       });
     }
 
-    const stand = await Stand.create(req.body);
+    const {judges, athletes, ...data } = req.body;
 
+    const stand = await Stand.create(data);
+    
+    stand.setAthletes(athletes);
+    stand.setJudges(judges);
+    
     return res.json(stand);
   }
 

@@ -10,6 +10,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.removeColumn('stands', 'fk_modalities_id');
+    return queryInterface.removeColumn('stands', 'fk_modality_id');
   },
 };

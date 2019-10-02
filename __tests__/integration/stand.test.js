@@ -47,7 +47,7 @@ describe('User', () => {
 
   it('A rota get/bancas/:id deve retornar status 400 por não existir banca com id informado', async () => {
     const response = await request(app)
-      .get(`/stands/1`)
+      .get(`/stands/500`)
       .send();
 
     expect(response.status).toBe(400);

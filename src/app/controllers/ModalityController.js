@@ -20,14 +20,14 @@ class ModalityController {
     });
 
     if (!(await schema.isValid(req.params))) {
-      return res.status(400).json({ error: 'Falha de Validação' });
+      return res.status(400).json({ error: 'Falha de Validação!' });
     }
 
     const { id } = req.params;
     const modality = await Modality.findByPk(id);
 
     if (!modality) {
-      return res.status(400).json({ error: 'Modalidade não existe' });
+      return res.status(400).json({ error: 'Modalidade não existe!' });
     }
 
     return res.json(modality);
@@ -40,10 +40,10 @@ class ModalityController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.status(400).json({ error: 'Falha de Validação!' });
     }
 
-    const { id, type,url_image } = await Modality.create(req.body);
+    const { id, type, url_image } = await Modality.create(req.body);
 
     return res.json({
       id,
@@ -63,7 +63,7 @@ class ModalityController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Error de Validação' });
+      return res.status(400).json({ error: 'Falha de Validação!' });
     }
 
     const { id } = req.body;
@@ -71,7 +71,7 @@ class ModalityController {
     const modality = await Modality.findByPk(id);
 
     if (!modality) {
-      return res.json({ error: 'Modalidade não existe' });
+      return res.json({ error: 'Modalidade não existe!' });
     }
 
     const { type, url_image } = await modality.update(req.body);

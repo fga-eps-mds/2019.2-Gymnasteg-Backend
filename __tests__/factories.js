@@ -24,6 +24,7 @@ factory.define('Stand', Stand, {
 
 factory.define('Modality', Modality, {
   type: faker.lorem.word(),
+  url_image: faker.image.imageUrl(),
 });
 
 factory.define('Coordinator', Coordinator, {

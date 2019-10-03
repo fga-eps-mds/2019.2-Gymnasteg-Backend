@@ -24,6 +24,7 @@ routes.get('/stands/:id', StandController.show);
 routes.post('/stands', StandController.store);
 routes.put('/stands', StandController.update);
 
+routes.get('/judges', JudgeManagement.index);
 routes.post('/createJudge', JudgeManagement.create);
 routes.post('/sessions', SessionController.store);
 

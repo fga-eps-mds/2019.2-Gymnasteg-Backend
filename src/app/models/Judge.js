@@ -21,6 +21,14 @@ class Judge extends Model {
     return this;
   }
 
+  static associate(models) {
+    this.belongsToMany(models.Stand, {
+      through: 'standJudges',
+      as: 'stands',
+      foreignKey: 'fk_judge_id',
+    });
+  }
+
   checkPassword(password) {
     return password === this.password;
   }

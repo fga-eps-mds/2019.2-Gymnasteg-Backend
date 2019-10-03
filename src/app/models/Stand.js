@@ -25,6 +25,11 @@ class Stand extends Model {
       as: 'athletes',
       foreignKey: 'fk_stand_id',
     });
+    this.belongsToMany(models.Judge, {
+      through: 'standJudges',
+      as: 'judges',
+      foreignKey: 'fk_stand_id',
+    });
   }
 }
 

@@ -20,6 +20,8 @@ factory.define('Stand', Stand, {
   category_age: faker.lorem.word(),
   date_event: faker.date.future(2),
   horary: '12:00:00',
+  judges: [],
+  athletes: [],
 });
 
 factory.define('Modality', Modality, {

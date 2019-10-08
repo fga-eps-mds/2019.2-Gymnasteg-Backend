@@ -27,9 +27,13 @@ O Gymnasteg ultiliza a plataforma [Docker](https://www.docker.com/what-docker) p
  ```
  git clone https://github.com/fga-eps-mds/2019.2-Gymnasteg-Wiki.git
  ```
- 4. Crie e inicie os containers para o serviço:
+ 4. Crie uma conexao local do docker na sua máquina para que o docker do front e backend possam se comunicar:
+ ```
+ docker network create network-api
+ ```
+ 5. Crie e inicie os containers para o serviço:
 
  ```
  docker-compose up
  ```
- 5. Acesse a aplicação na porta X do seu `browser`: [http://localhosto]()
+ 6. Acesse a aplicação na porta X do seu `browser`: [http://localhost3333]()

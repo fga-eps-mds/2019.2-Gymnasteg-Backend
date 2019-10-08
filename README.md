@@ -1,5 +1,13 @@
 ![Gymnasteg](./logo.png)
 
+[![Build Status](https://travis-ci.org/fga-eps-mds/2019.2-Gymnasteg-Backend.svg?branch=devel)](https://travis-ci.org/fga-eps-mds/2019.2-Gymnasteg-Backend)
+
+<a href="https://codeclimate.com/github/byronkamal/2019.2-Gymnasteg-Backend/maintainability"><img src="https://api.codeclimate.com/v1/badges/e69edc79b0f11c945f3d/maintainability" /></a>
+
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/fga-eps-mds/2019.2-Gymnasteg-Backend.svg)](http://isitmaintained.com/project/fga-eps-mds/2019.2-Gymnasteg-Backend "Percentage of issues still open")
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 O projeto Gymnasteg surgiu como uma proposta de melhorar o processo de votação em campeonatos de ginastica de pequeno porte. O objetivo do projeto é fazer com o que usuário tenha uma boa experiencia no processo de votação e a efetividade na votação.
 
 
@@ -19,9 +27,13 @@ O Gymnasteg ultiliza a plataforma [Docker](https://www.docker.com/what-docker) p
  ```
  git clone https://github.com/fga-eps-mds/2019.2-Gymnasteg-Wiki.git
  ```
- 4. Crie e inicie os containers para o serviço:
+ 4. Crie uma conexao local do docker na sua máquina para que o docker do front e backend possam se comunicar:
+ ```
+ docker network create network-api
+ ```
+ 5. Crie e inicie os containers para o serviço:
 
  ```
  docker-compose up
  ```
- 5. Acesse a aplicação na porta X do seu `browser`: [http://localhosto]()
+ 6. Acesse a aplicação na porta X do seu `browser`: [http://localhost3333]()

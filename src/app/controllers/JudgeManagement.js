@@ -39,6 +39,7 @@ module.exports = {
         if (error.errors[0].validatorKey === 'not_unique') {
           return res.status(409).send('Árbitro já cadastrado.');
         }
+        // eslint-disable-next-line
       } catch (error) {}
 
       return res.status(500).send('Não foi possível cadastrar o árbitro.');

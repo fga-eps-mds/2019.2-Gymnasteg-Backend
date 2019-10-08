@@ -6,7 +6,7 @@ import Stand from '../models/Stand';
 module.exports = {
   async index(req, res) {
     const judges = await Judge.findAll({
-      attributes: ['id', 'name', 'email'],
+      attributes: ['id', 'name', 'email', 'password', 'judge_type'],
       include: [
         {
           model: Stand,

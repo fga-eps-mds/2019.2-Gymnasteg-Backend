@@ -3,60 +3,59 @@ import app from '../../src/app';
 import factory from '../factories';
 import truncate from '../util/truncate';
 
-describe('JudgeController', () => {
+describe('JudgeManagement', () => {
   beforeEach(async () => {
     await truncate();
   });
 
-  describe('Duplicated Judge prevention.', () => {
-    it('Should return status 409 when a Judge has already been registered.', async () => {
-      const judge = (await factory.build('Judge')).dataValues;
-      judge.id = undefined;
+  async function getCoordinatorSession() {
+    const coordinator = (await factory.create('Coordinator')).dataValues;
 
-      await request(app)
-        .post('/createJudge')
-        .send(judge);
-      const response = await request(app)
-        .post('/createJudge')
-        .send(judge);
+    const session = await request(app)
+      .post('/sessions')
+      .send({
+        email: coordinator.email,
+        password: coordinator.password,
+      });
 
-      expect(response.status).toBe(409);
-    });
-  });
+    return session.body.token;
+  }
 
   describe('Judges listing', () => {
-    it('Should return status 401 if no token is provided.', async () => {
-      const response = await request(app).get('/judges');
+    describe('Authentication', () => {
+      it('Should return status 401 if no token is provided.', async () => {
+        const response = await request(app).get('/judges');
 
-      expect(response.status).toBe(401);
-    });
+        expect(response.status).toBe(401);
+      });
 
-    it('Should return status 401 if a token for a judge is provided.', async () => {
-      const judge = await factory.create('JudgeWithPassword');
-      const session = await request(app)
-        .post('/sessions')
-        .send({ email: judge.email, password: judge.password });
-      const response = await request(app)
-        .get('/judges')
-        .send({ token: session.body.token });
+      it('Should return status 401 if a token for a judge is provided.', async () => {
+        const judge = await factory.create('JudgeWithPassword');
+        const session = await request(app)
+          .post('/sessions')
+          .send({ email: judge.email, password: judge.password });
+        const response = await request(app)
+          .get('/judges')
+          .send({ token: session.body.token });
 
-      expect(response.status).toBe(401);
-    });
+        expect(response.status).toBe(401);
+      });
 
-    it('Should return status 200 if a token for a coordinator is provided.', async () => {
-      const coordinator = (await factory.create('Coordinator')).dataValues;
+      it('Should return status 401 if the provided token is invalid.', async () => {
+        const response = await request(app)
+          .get('/judges')
+          .send({ token: 'asaksaksjasmkamzkakasj' });
 
-      const session = await request(app)
-        .post('/sessions')
-        .send({
-          email: coordinator.email,
-          password: coordinator.password,
-        });
-      const response = await request(app)
-        .get('/judges')
-        .send({ token: session.body.token });
+        expect(response.status).toBe(401);
+      });
 
-      expect(response.status).toBe(200);
+      it('Should return status 200 if a token for a coordinator is provided.', async () => {
+        const response = await request(app)
+          .get('/judges')
+          .send({ token: await getCoordinatorSession() });
+
+        expect(response.status).toBe(200);
+      });
     });
 
     it('Should return all existing judges.', async () => {
@@ -86,7 +85,7 @@ describe('JudgeController', () => {
 
         const response = await request(app)
           .post('/createJudge')
-          .send(judge);
+          .send({ ...judge, token: await getCoordinatorSession() });
 
         expect(response.status).toBe(500);
       });
@@ -117,14 +116,81 @@ describe('JudgeController', () => {
     );
   });
 
+  describe('Authentication', () => {
+    it('Should return status 401 if no token is provided.', async () => {
+      const judge = (await factory.build('Judge')).dataValues;
+      judge.id = undefined;
+
+      const response = await request(app)
+        .post('/createJudge')
+        .send({ ...judge });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('Should return status 401 if a token for a judge is provided.', async () => {
+      const judge = await factory.create('JudgeWithPassword');
+      const session = await request(app)
+        .post('/sessions')
+        .send({ email: judge.email, password: judge.password });
+
+      const judgeToCreate = (await factory.build('Judge')).dataValues;
+      judgeToCreate.id = undefined;
+
+      const response = await request(app)
+        .post('/createJudge')
+        .send({ ...judgeToCreate, token: session.body.token });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('Should return status 401 if the provided token is invalid.', async () => {
+      const judge = (await factory.build('Judge')).dataValues;
+      judge.id = undefined;
+
+      const response = await request(app)
+        .post('/createJudge')
+        .send({ ...judge, token: 'asaksaksjasmkamzkakasj' });
+
+      expect(response.status).toBe(401);
+    });
+
+    it('Should return status 201 if a token for a coordinator is provided.', async () => {
+      const judge = (await factory.build('Judge')).dataValues;
+      judge.id = undefined;
+
+      const response = await request(app)
+        .post('/createJudge')
+        .send({ ...judge, token: await getCoordinatorSession() });
+
+      expect(response.status).toBe(201);
+    });
+  });
+
   it('Should generate a password that is at least 12 characters long.', async () => {
     const judge = (await factory.build('Judge')).dataValues;
     judge.id = undefined;
 
     const response = await request(app)
       .post('/createJudge')
-      .send(judge);
+      .send({ ...judge, token: await getCoordinatorSession() });
 
     expect(response.body.password.length).toBeGreaterThanOrEqual(12);
+  });
+
+  describe('Duplicated Judge prevention.', () => {
+    it('Should return status 409 when a Judge has already been registered.', async () => {
+      const judge = (await factory.build('Judge')).dataValues;
+      judge.id = undefined;
+
+      await request(app)
+        .post('/createJudge')
+        .send({ ...judge, token: await getCoordinatorSession() });
+      const response = await request(app)
+        .post('/createJudge')
+        .send({ ...judge, token: await getCoordinatorSession() });
+
+      expect(response.status).toBe(409);
+    });
   });
 });

@@ -11,6 +11,7 @@ module.exports = {
     const { token } = req.body;
     try {
       const decodedToken = jwt.verify(token, authConfig.secret);
+
       if (!decodedToken.coord) {
         return res
           .status(401)
@@ -34,7 +35,18 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { name, email, judge_type } = req.body;
+    const { name, email, judge_type, token } = req.body;
+    try {
+      const decodedToken = jwt.verify(token, authConfig.secret);
+
+      if (!decodedToken.coord) {
+        return res
+          .status(401)
+          .send('Árbitros não podem listar os outros árbitros.');
+      }
+    } catch (err) {
+      return res.status(401).send('Token inválido.');
+    }
 
     try {
       await Database.connection.sync;

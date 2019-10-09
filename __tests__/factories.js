@@ -31,9 +31,9 @@ factory.define('Modality', Modality, {
 });
 
 factory.define('Coordinator', Coordinator, {
-  email: faker.internet.email(),
-  name: faker.name.findName(),
-  password: faker.internet.password(),
+  email: () => faker.internet.email(),
+  name: () => faker.name.findName(),
+  password: () => faker.internet.password(),
 });
 
 factory.define('Judge', Judge, {

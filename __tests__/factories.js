@@ -4,6 +4,7 @@ import faker from 'faker';
 import Stand from '../src/app/models/Stand';
 import Modality from '../src/app/models/Modality';
 import Coordinator from '../src/app/models/Coordinator';
+import Judge from '../src/app/models/Judge';
 
 factory.define('Stand', Stand, {
   num_stand: faker.random.number({
@@ -33,6 +34,29 @@ factory.define('Coordinator', Coordinator, {
   email: faker.internet.email(),
   name: faker.name.findName(),
   password: faker.internet.password(),
+});
+
+factory.define('Judge', Judge, {
+  email: () => faker.internet.email(),
+  name: () => faker.name.findName(),
+  judge_type: () =>
+    faker.random.arrayElement([
+      'Execution',
+      'Difficulty',
+      'Execution and Difficulty',
+    ]),
+});
+
+factory.define('JudgeWithPassword', Judge, {
+  email: () => faker.internet.email(),
+  name: () => faker.name.findName(),
+  judge_type: () =>
+    faker.random.arrayElement([
+      'Execution',
+      'Difficulty',
+      'Execution and Difficulty',
+    ]),
+  password: () => faker.internet.password(),
 });
 
 export default factory;

@@ -5,7 +5,12 @@ class Judge extends Model {
     super.init(
       {
         name: Sequelize.STRING,
-        email: Sequelize.STRING,
+        email: {
+          type: Sequelize.STRING,
+          validate: {
+            isEmail: true,
+          },
+        },
         password: Sequelize.STRING,
         judge_type: Sequelize.ENUM(
           'Execution',

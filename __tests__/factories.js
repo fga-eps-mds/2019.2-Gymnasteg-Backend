@@ -32,7 +32,7 @@ factory.define('Modality', Modality, {
 factory.define('Coordinator', Coordinator, {
   email: faker.internet.email(),
   name: faker.name.findName(),
-  password_hash: faker.internet.password(),
+  password: faker.internet.password(),
 });
 
 export default factory;

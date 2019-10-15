@@ -20,7 +20,7 @@ services:
     image: api
     depends_on:
       - db
-    command: bash -c "npx sequelize db:seed:undo:all && npx sequelize db:migrate && npx sequelize db:seed:all && yarn dev"
+    command: bash -c "npx sequelize db:migrate && npx sequelize db:seed:undo:all && npx sequelize db:seed:all && yarn dev"
     build: ./
     volumes:
       - .:/app

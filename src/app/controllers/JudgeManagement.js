@@ -8,19 +8,6 @@ import authConfig from '../../config/auth';
 
 module.exports = {
   async index(req, res) {
-    const { token } = req.body;
-    try {
-      const decodedToken = jwt.verify(token, authConfig.secret);
-
-      if (!decodedToken.coord) {
-        return res
-          .status(401)
-          .send('Árbitros não podem listar os outros árbitros.');
-      }
-    } catch (err) {
-      return res.status(401).send('Token inválido.');
-    }
-
     const judges = await Judge.findAll({
       attributes: ['id', 'name', 'email', 'password', 'judge_type'],
       include: [
@@ -35,18 +22,7 @@ module.exports = {
   },
 
   async create(req, res) {
-    const { name, email, judge_type, token } = req.body;
-    try {
-      const decodedToken = jwt.verify(token, authConfig.secret);
-
-      if (!decodedToken.coord) {
-        return res
-          .status(401)
-          .send('Árbitros não podem listar os outros árbitros.');
-      }
-    } catch (err) {
-      return res.status(401).send('Token inválido.');
-    }
+    const { name, email, judge_type } = req.body;
 
     try {
       await Database.connection.sync;

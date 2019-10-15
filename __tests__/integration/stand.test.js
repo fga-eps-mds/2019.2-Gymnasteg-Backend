@@ -9,6 +9,19 @@ describe('User', () => {
     await truncate();
   });
 
+  async function getCoordinatorSession() {
+    const coordinator = (await factory.create('Coordinator')).dataValues;
+
+    const session = await request(app)
+      .post('/sessions')
+      .send({
+        email: coordinator.email,
+        password: coordinator.password,
+      });
+
+    return session.body.token;
+  }
+
   it('A rota get/bancas deve retornar a lista de bancas cadastradas', async () => {
     const { id } = await factory.create('Modality');
 
@@ -18,7 +31,7 @@ describe('User', () => {
 
     const response = await request(app)
       .get('/stands')
-      .send();
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.status).toBe(200);
   });
@@ -32,7 +45,7 @@ describe('User', () => {
 
     const response = await request(app)
       .get(`/stands/${id}`)
-      .send();
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.status).toBe(200);
   });
@@ -40,7 +53,7 @@ describe('User', () => {
   it('A rota get/bancas/:id deve retornar um status 400', async () => {
     const response = await request(app)
       .get(`/stands/-1`)
-      .send();
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.status).toBe(400);
   });
@@ -48,7 +61,7 @@ describe('User', () => {
   it('A rota get/bancas/:id deve retornar status 400 por não existir banca com id informado', async () => {
     const response = await request(app)
       .get(`/stands/500`)
-      .send();
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.status).toBe(400);
   });
@@ -62,7 +75,8 @@ describe('User', () => {
 
     const response = await request(app)
       .post('/stands')
-      .send(stand);
+      .send(stand)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.body).toHaveProperty('id');
   });
@@ -77,7 +91,8 @@ describe('User', () => {
 
     const response = await request(app)
       .post('/stands')
-      .send(stand);
+      .send(stand)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
     expect(response.body.error).toBe('Falha na validação das informações');
   });
 
@@ -109,7 +124,8 @@ describe('User', () => {
 
     const response = await request(app)
       .put('/stands')
-      .send(stand);
+      .send(stand)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.body.num_stand).toBe(1);
   });
@@ -142,7 +158,8 @@ describe('User', () => {
 
     const response = await request(app)
       .put('/stands')
-      .send(stand);
+      .send(stand)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.body.error).toBe('Falha na validação das informações');
   });
@@ -157,7 +174,8 @@ describe('User', () => {
 
     const response = await request(app)
       .put('/stands')
-      .send(stand);
+      .send(stand)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.body.error).toBe('Banca não existe');
   });

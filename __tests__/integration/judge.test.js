@@ -36,7 +36,7 @@ describe('JudgeManagement', () => {
           .send({ email: judge.email, password: judge.password });
         const response = await request(app)
           .get('/judges')
-          .send({ token: session.body.token });
+          .set('Authentication', `Bearer ${session.body.token}`);
 
         expect(response.status).toBe(401);
       });
@@ -44,15 +44,16 @@ describe('JudgeManagement', () => {
       it('Should return status 401 if the provided token is invalid.', async () => {
         const response = await request(app)
           .get('/judges')
-          .send({ token: 'asaksaksjasmkamzkakasj' });
+          .set('Authentication', `Bearer asaksaksjasmkamzkakasj`);
 
         expect(response.status).toBe(401);
       });
 
       it('Should return status 200 if a token for a coordinator is provided.', async () => {
+        const coordinatorToken = await getCoordinatorSession();
         const response = await request(app)
           .get('/judges')
-          .send({ token: await getCoordinatorSession() });
+          .set('Authentication', `Bearer ${coordinatorToken}`);
 
         expect(response.status).toBe(200);
       });
@@ -70,7 +71,7 @@ describe('JudgeManagement', () => {
 
       const response = await request(app)
         .get('/judges')
-        .send({ token: session.body.token });
+        .set('Authentication', `Bearer ${session.body.token}`);
 
       expect(response.body.length).toBe(3);
     });
@@ -85,7 +86,8 @@ describe('JudgeManagement', () => {
 
         const response = await request(app)
           .post('/createJudge')
-          .send({ ...judge, token: await getCoordinatorSession() });
+          .send(judge)
+          .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
         expect(response.status).toBe(500);
       });
@@ -123,7 +125,7 @@ describe('JudgeManagement', () => {
 
       const response = await request(app)
         .post('/createJudge')
-        .send({ ...judge });
+        .send(judge);
 
       expect(response.status).toBe(401);
     });
@@ -139,7 +141,8 @@ describe('JudgeManagement', () => {
 
       const response = await request(app)
         .post('/createJudge')
-        .send({ ...judgeToCreate, token: session.body.token });
+        .send(judgeToCreate)
+        .set('Authentication', `Bearer ${session.body.token}`);
 
       expect(response.status).toBe(401);
     });
@@ -150,7 +153,8 @@ describe('JudgeManagement', () => {
 
       const response = await request(app)
         .post('/createJudge')
-        .send({ ...judge, token: 'asaksaksjasmkamzkakasj' });
+        .send(judge)
+        .set('Authentication', `Bearer asaksaksjasmkamzkakasj`);
 
       expect(response.status).toBe(401);
     });
@@ -161,7 +165,8 @@ describe('JudgeManagement', () => {
 
       const response = await request(app)
         .post('/createJudge')
-        .send({ ...judge, token: await getCoordinatorSession() });
+        .send(judge)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
       expect(response.status).toBe(201);
     });
@@ -173,7 +178,8 @@ describe('JudgeManagement', () => {
 
     const response = await request(app)
       .post('/createJudge')
-      .send({ ...judge, token: await getCoordinatorSession() });
+      .send(judge)
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
     expect(response.body.password.length).toBeGreaterThanOrEqual(12);
   });
@@ -185,10 +191,12 @@ describe('JudgeManagement', () => {
 
       await request(app)
         .post('/createJudge')
-        .send({ ...judge, token: await getCoordinatorSession() });
+        .send(judge)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
       const response = await request(app)
         .post('/createJudge')
-        .send({ ...judge, token: await getCoordinatorSession() });
+        .send(judge)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
       expect(response.status).toBe(409);
     });

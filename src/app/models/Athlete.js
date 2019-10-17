@@ -6,7 +6,7 @@ class Athlete extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        gender: Sequelize.STRING,
+        gender: Sequelize.ENUM('M', 'F'),
         date_born: Sequelize.DATEONLY,
       },
       {

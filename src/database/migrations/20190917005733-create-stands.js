@@ -20,7 +20,8 @@ module.exports = {
 
       sex_modality: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM,
+        values: ['M', 'F'],
       },
 
       category_age: {

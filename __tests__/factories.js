@@ -5,6 +5,7 @@ import Stand from '../src/app/models/Stand';
 import Modality from '../src/app/models/Modality';
 import Coordinator from '../src/app/models/Coordinator';
 import Judge from '../src/app/models/Judge';
+import Athlete from '../src/app/models/Athlete';
 
 factory.define('Stand', Stand, {
   num_stand: faker.random.number({
@@ -17,7 +18,7 @@ factory.define('Stand', Stand, {
       min: 1,
     },
   }),
-  sex_modality: faker.lorem.word(),
+  sex_modality: faker.random.arrayElement(['M', 'F']),
   category_age: faker.lorem.word(),
   date_event: faker.date.future(2),
   horary: '12:00:00',
@@ -57,6 +58,15 @@ factory.define('JudgeWithPassword', Judge, {
       'Execution and Difficulty',
     ]),
   password: () => faker.internet.password(),
+});
+
+factory.define('Athlete', Athlete, () => {
+  return {
+    name: faker.name.findName(),
+    email: faker.internet.email(),
+    gender: faker.random.arrayElement(['M', 'F']),
+    date_born: faker.date.between(faker.date.past(10), faker.date.past(42)),
+  };
 });
 
 export default factory;

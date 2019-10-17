@@ -7,7 +7,7 @@ describe('Coordinator', () => {
     await truncate();
   });
 
-  it('A rota post/coordenadores dever retornar um id de confirmação de cadastro', async () => {
+  it('A rota post/coordinators dever retornar um id de confirmação de cadastro', async () => {
     const response = await request(app)
       .post('/coordinators')
       .send({

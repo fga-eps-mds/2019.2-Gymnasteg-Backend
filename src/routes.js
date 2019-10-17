@@ -36,6 +36,7 @@ routes.get(
   }),
   StandController.show
 );
+
 routes.post(
   '/stands',
   AuthMiddleware({

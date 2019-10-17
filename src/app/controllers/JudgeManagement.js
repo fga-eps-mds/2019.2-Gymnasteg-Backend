@@ -1,7 +1,10 @@
 import PasswordGenerator from 'password-generator';
+import jwt from 'jsonwebtoken';
+
 import Judge from '../models/Judge';
 import Database from '../../database';
 import Stand from '../models/Stand';
+import authConfig from '../../config/auth';
 
 module.exports = {
   async index(req, res) {

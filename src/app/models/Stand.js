@@ -6,7 +6,7 @@ class Stand extends Model {
       {
         num_stand: Sequelize.INTEGER,
         qtd_judge: Sequelize.INTEGER,
-        sex_modality: Sequelize.STRING,
+        sex_modality: Sequelize.ENUM('M', 'F'),
         category_age: Sequelize.STRING,
         date_event: Sequelize.DATEONLY,
         horary: Sequelize.TIME,

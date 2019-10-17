@@ -21,7 +21,8 @@ module.exports = {
 
       gender: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM,
+        values: ['M', 'F'],
       },
 
       date_born: {

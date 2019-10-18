@@ -1,24 +1,111 @@
 import PasswordGenerator from 'password-generator';
-import jwt from 'jsonwebtoken';
+import * as Yup from 'yup';
 
 import Judge from '../models/Judge';
 import Database from '../../database';
 import Stand from '../models/Stand';
-import authConfig from '../../config/auth';
+import Modality from '../models/Modality';
 
 module.exports = {
   async index(req, res) {
-    const judges = await Judge.findAll({
-      attributes: ['id', 'name', 'email', 'password', 'judge_type'],
-      include: [
-        {
-          model: Stand,
-          as: 'stands',
-          through: { attributes: [] },
-        },
-      ],
+    try {
+      const judges = await Judge.findAll({
+        attributes: ['id', 'name', 'email', 'password', 'judge_type'],
+        include: [
+          {
+            order: ['date_event', 'DESC'],
+            model: Stand,
+            as: 'stands',
+            attributes: [
+              'id',
+              'num_stand',
+              'qtd_judge',
+              'sex_modality',
+              'category_age',
+              'date_event',
+              'horary',
+            ],
+            through: { attributes: [] },
+            include: [
+              {
+                model: Modality,
+                as: 'modality',
+                attributes: ['type'],
+              },
+              {
+                model: Judge,
+                as: 'judges',
+                attributes: ['name', 'judge_type'],
+                through: { attributes: [] },
+              },
+            ],
+          },
+        ],
+      });
+      return res.status(200).json(judges);
+    } catch (err) {
+      return res.status(500).json({ error: 'Error na requisição!' });
+    }
+  },
+
+  async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .integer()
+        .required()
+        .positive(),
     });
-    return res.status(200).json(judges);
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.params;
+
+    try {
+      const judge = await Judge.findByPk(id, {
+        attributes: ['id', 'name', 'email', 'password', 'judge_type'],
+        include: [
+          {
+            order: ['date_event', 'DESC'],
+            model: Stand,
+            as: 'stands',
+            attributes: [
+              'id',
+              'num_stand',
+              'qtd_judge',
+              'sex_modality',
+              'category_age',
+              'date_event',
+              'horary',
+            ],
+            through: { attributes: [] },
+            include: [
+              {
+                model: Modality,
+                as: 'modality',
+                attributes: ['type'],
+              },
+              {
+                model: Judge,
+                as: 'judges',
+                attributes: ['name', 'judge_type'],
+                through: { attributes: [] },
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!judge) {
+        return res.status(400).json({ error: 'Banca não existe' });
+      }
+
+      return res.json(judge);
+    } catch (err) {
+      return res.status(500).json({ error: 'Error na requisição!' });
+    }
   },
 
   async create(req, res) {

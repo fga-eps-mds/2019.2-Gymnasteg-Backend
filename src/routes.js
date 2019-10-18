@@ -70,6 +70,8 @@ routes.post(
   }),
   JudgeManagement.create
 );
+routes.get('/judges/:id', JudgeManagement.show);
+
 routes.post('/sessions', SessionController.store);
 
 routes.put('/users', JudgeManagement.update);

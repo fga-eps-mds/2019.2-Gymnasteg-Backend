@@ -5,6 +5,7 @@ import Judge from '../models/Judge';
 import Database from '../../database';
 import Stand from '../models/Stand';
 import Modality from '../models/Modality';
+import Athlete from '../models/Athlete';
 
 module.exports = {
   async index(req, res) {
@@ -65,7 +66,7 @@ module.exports = {
 
     try {
       const judge = await Judge.findByPk(id, {
-        attributes: ['id', 'name', 'email', 'password', 'judge_type'],
+        attributes: ['id', 'name', 'judge_type'],
         include: [
           {
             order: ['date_event', 'DESC'],
@@ -88,9 +89,9 @@ module.exports = {
                 attributes: ['type'],
               },
               {
-                model: Judge,
-                as: 'judges',
-                attributes: ['name', 'judge_type'],
+                model: Athlete,
+                as: 'athletes',
+                attributes: ['name', 'gender', 'date_born'],
                 through: { attributes: [] },
               },
             ],

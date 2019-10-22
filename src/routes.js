@@ -70,7 +70,15 @@ routes.post(
   }),
   JudgeManagement.create
 );
-routes.get('/judges/:id', JudgeManagement.show);
+routes.get(
+  '/judgeData/',
+  AuthMiddleware({
+    isCoordinatorRoute: false,
+    authenticationErrorMessage:
+      'Coordenadores não possuem bancas para avaliar.',
+  }),
+  JudgeManagement.show
+);
 
 routes.post('/sessions', SessionController.store);
 

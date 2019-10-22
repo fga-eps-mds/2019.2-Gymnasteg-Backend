@@ -45,24 +45,12 @@ module.exports = {
       });
       return res.status(200).json(judges);
     } catch (err) {
-      return res.status(500).json({ error: 'Error na requisição!' });
+      return res.status(500).send('Erro na requisição!');
     }
   },
 
   async show(req, res) {
-    const schema = Yup.object().shape({
-      id: Yup.number()
-        .integer()
-        .required()
-        .positive(),
-    });
-    if (!(await schema.isValid(req.params))) {
-      return res
-        .status(400)
-        .json({ error: 'Falha na validação das informações' });
-    }
-
-    const { id } = req.params;
+    const id = req.userId;
 
     try {
       const judge = await Judge.findByPk(id, {
@@ -99,13 +87,9 @@ module.exports = {
         ],
       });
 
-      if (!judge) {
-        return res.status(400).json({ error: 'Banca não existe' });
-      }
-
       return res.json(judge);
     } catch (err) {
-      return res.status(500).json({ error: 'Error na requisição!' });
+      return res.status(500).send('Erro na requisição!');
     }
   },
 

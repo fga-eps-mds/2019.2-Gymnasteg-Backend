@@ -1,5 +1,4 @@
 import PasswordGenerator from 'password-generator';
-import * as Yup from 'yup';
 
 import Judge from '../models/Judge';
 import Database from '../../database';

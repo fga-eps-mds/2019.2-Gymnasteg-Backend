@@ -33,6 +33,63 @@ class CoordinatorController {
       email,
     });
   }
+
+  async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .integer()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.params;
+    const coordinator = await Coordinator.findByPk(id);
+    
+    if (!coordinator) {
+      return res.status(400).json({ error: 'Coordenador não existe' });
+    }
+    
+    return res.json(coordinator);
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .positive()
+        .integer()
+        .required(),
+      name: Yup.string().required(),
+      email: Yup.string().required(),
+      password: Yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Falha de Validação!' });
+    }
+
+    const { id } = req.body;
+
+    const coordinator = await Coordinator.findByPk(id);
+
+    if (!coordinator) {
+      return res.json({ error: 'Coordenador não existe!' });
+    }
+
+    const { name, email, password } = await coordinator.update(req.body);
+    return res.json({
+      id,
+      name,
+      email,
+      password,
+    });
+  }
+
 }
 
 export default new CoordinatorController();

@@ -5,6 +5,7 @@ import ModalityController from './app/controllers/ModalityController';
 import StandController from './app/controllers/StandController';
 import CoordinatorController from './app/controllers/CoordinatorController';
 import AthleteController from './app/controllers/AthleteController';
+import RankingController from './app/controllers/RankingController';
 
 import AuthMiddleware from './app/middlewares/auth';
 
@@ -101,6 +102,11 @@ routes.put(
     onlyNeedsValidTokens: true,
   }),
   AthleteController.update
+);
+
+routes.get(
+  '/ranking/stand/:id_stand/athlete/:id_athlete',
+  RankingController.show
 );
 
 export default routes;

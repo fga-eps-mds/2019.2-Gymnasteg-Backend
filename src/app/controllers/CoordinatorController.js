@@ -41,18 +41,24 @@ class CoordinatorController {
         .required()
         .positive(),
     });
-
-    if (!(await schema.isValid(req.params))) {
+   /* 
+    if (!(await schema.isValid(req.userId))) {
       return res
         .status(400)
         .json({ error: 'Falha na validação das informações' });
     }
-
-    const { id } = req.params;
-    const coordinator = await Coordinator.findByPk(id);
+*/
+    const id = req.userId;
+    
+    const coordinator = await Coordinator.findByPk(id, {
+      attributes: [
+        'name',
+        'email',
+      ],
+    });
     
     if (!coordinator) {
-      return res.status(400).json({ error: 'Coordenador não existe' });
+      return res.status(404).json({ error: 'Coordenador não existe' });
     }
     
     return res.json(coordinator);

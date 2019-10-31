@@ -5,9 +5,6 @@ import Judge from '../models/Judge';
 class RankingController {
   async show(req, res) {
     const schema = Yup.object().shape({
-      id_athlete: Yup.number()
-        .required()
-        .positive(),
       id_stand: Yup.number()
         .required()
         .positive(),
@@ -19,13 +16,12 @@ class RankingController {
         .json({ error: 'Falha na validação das informações!' });
     }
 
-    const { id_stand, id_athlete } = req.params;
+    const { id_stand } = req.params;
 
     try {
       const votes = await Vote.findAll({
         where: {
           fk_stand_id: id_stand,
-          fk_athlete_id: id_athlete,
         },
         include: [
           {
@@ -34,7 +30,7 @@ class RankingController {
             attributes: ['name'],
           },
         ],
-        attributes: ['punctuation', 'type_punctuation'],
+        attributes: ['punctuation', 'type_punctuation', 'fk_athlete_id'],
       });
 
       return res.json(votes);

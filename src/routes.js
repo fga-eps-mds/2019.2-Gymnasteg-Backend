@@ -104,9 +104,6 @@ routes.put(
   AthleteController.update
 );
 
-routes.get(
-  '/ranking/stand/:id_stand/athlete/:id_athlete',
-  RankingController.show
-);
+routes.get('/ranking/stand/:id_stand', RankingController.show);
 
 export default routes;

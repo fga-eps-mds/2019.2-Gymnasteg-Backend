@@ -16,7 +16,7 @@ class Vote extends Model {
 
   static associate(models) {
     this.belongsTo(models.Stand, { foreignKey: 'fk_stand_id' });
-    this.belongsTo(models.Judge, { foreignKey: 'fk_judge_id' });
+    this.belongsTo(models.Judge, { foreignKey: 'fk_judge_id', as: 'judge' });
     this.belongsTo(models.Athlete, { foreignKey: 'fk_athlete_id' });
   }
 }

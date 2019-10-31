@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import Vote from '../models/Vote';
+import Judge from '../models/Judge';
 
 class RankingController {
   async show(req, res) {
@@ -26,6 +27,14 @@ class RankingController {
           fk_stand_id: id_stand,
           fk_athlete_id: id_athlete,
         },
+        include: [
+          {
+            model: Judge,
+            as: 'judge',
+            attributes: ['name'],
+          },
+        ],
+        attributes: ['punctuation', 'type_punctuation'],
       });
 
       return res.json(votes);

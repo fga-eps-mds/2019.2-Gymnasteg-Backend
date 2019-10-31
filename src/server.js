@@ -57,7 +57,17 @@ io.on('connection', async socket => {
         socket.join(`${stand.id}`);
       });
 
+      socket.on('disconnect', () => {
+        connectedJudges[decoded.id] = undefined;
+      });
+
       socket.on('voteStart', voteSocket => {
+        // Judge not registered on the stand
+        if (!judge.stands.includes(voteSocket.stand)) {
+          return;
+        }
+
+        // Voting already happening
         if (typeof votings[voteSocket.stand] !== 'undefined') {
           return;
         }

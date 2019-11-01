@@ -21,11 +21,18 @@ routes.put('/modalities', ModalityController.update);
 
 routes.post('/coordinators', CoordinatorController.store);
 routes.get(
-  '/coordinators', 
+  '/coordinators/:id', 
   AuthMiddleware({
     isCoordinatorRoute: true,
     authenticationErrorMessage: 'Acesso Negado.'
   }),CoordinatorController.show
+);
+routes.get(
+  '/coordinators', 
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Acesso Negado.'
+  }),CoordinatorController.index
 );
 routes.put('/coordinators', CoordinatorController.update);
 

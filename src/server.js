@@ -63,7 +63,9 @@ io.on('connection', async socket => {
 
       socket.on('voteStart', voteSocket => {
         // Judge not registered on the stand
-        if (!judge.stands.includes(voteSocket.stand)) {
+        if (
+          !judge.stands.find(stand => stand.dataValues.id === voteSocket.stand)
+        ) {
           return;
         }
 

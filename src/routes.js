@@ -71,6 +71,16 @@ routes.post(
   }),
   JudgeManagement.create
 );
+routes.get(
+  '/judgeData/',
+  AuthMiddleware({
+    isCoordinatorRoute: false,
+    authenticationErrorMessage:
+      'Coordenadores não possuem bancas para avaliar.',
+  }),
+  JudgeManagement.show
+);
+
 routes.post('/sessions', SessionController.store);
 
 routes.put('/users', JudgeManagement.update);

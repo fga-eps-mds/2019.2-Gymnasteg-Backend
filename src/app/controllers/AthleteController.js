@@ -53,7 +53,9 @@ class AthleteController {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string().required(),
-      gender: Yup.string().required(),
+      gender: Yup.string()
+        .matches(/^(M|F)$/)
+        .required(),
       date_born: Yup.date().required(),
     });
 

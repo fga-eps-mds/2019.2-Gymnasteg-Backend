@@ -6,6 +6,7 @@ module.exports = {
       'coordinators',
       [
         {
+          id: 0,
           name: 'root',
           email: 'root@root.root',
           password_hash: await bcrypt.hash('root', 8),

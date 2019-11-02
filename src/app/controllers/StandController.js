@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import Stand from '../models/Stand';
 import Athlete from '../models/Athlete';
 import Judge from '../models/Judge';
+import Modality from '../models/Modality';
 
 class StandController {
   async index(req, res) {
@@ -28,6 +29,11 @@ class StandController {
           as: 'judges',
           attributes: ['id', 'name', 'email', 'judge_type'],
           through: { attributes: [] },
+        },
+        {
+          model: Modality,
+          as: 'modality',
+          attributes: ['id', 'type'],
         },
       ],
     });

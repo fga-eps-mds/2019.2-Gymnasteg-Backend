@@ -8,6 +8,8 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+[![codecov](https://codecov.io/gh/fga-eps-mds/2019.2-Gymnasteg-Backend/branch/devel/graph/badge.svg)](https://codecov.io/gh/fga-eps-mds/2019.2-Gymnasteg-Backend)
+
 O projeto Gymnasteg surgiu como uma proposta de melhorar o processo de votação em campeonatos de ginastica de pequeno porte. O objetivo do projeto é fazer com o que usuário tenha uma boa experiencia no processo de votação e a efetividade na votação.
 
 

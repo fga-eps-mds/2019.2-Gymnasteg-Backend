@@ -18,6 +18,8 @@ before_scrip:
 script:
   # - docker exec -it web yarn test
   - yarn test
+  - ./node_modules/.bin/codecov -t ${CODECOV_API_TOKEN}
+
 
 after_script:
 #   - docker-compose down

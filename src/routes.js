@@ -34,7 +34,13 @@ routes.get(
     authenticationErrorMessage: 'Acesso Negado.'
   }),CoordinatorController.index
 );
-routes.put('/coordinators', CoordinatorController.update);
+routes.put(
+  '/coordinators',   
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Acesso Negado.'
+}),CoordinatorController.update
+);
 
 routes.get(
   '/stands',

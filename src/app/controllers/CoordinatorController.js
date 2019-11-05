@@ -71,34 +71,41 @@ class CoordinatorController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      id: Yup.number()
-        .positive()
-        .integer()
-        .required(),
       name: Yup.string().required(),
       email: Yup.string().required(),
+      oldPassword: Yup.string().required(),
       password: Yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Falha de Validação!' });
     }
-
-    const { id } = req.body;
-
+    
+    const { name, email, oldPassword, password } = req.body;
+    const id = req.userId;
     const coordinator = await Coordinator.findByPk(id);
 
     if (!coordinator) {
-      return res.json({ error: 'Coordenador não existe!' });
+      return res.status(404).json({ error: 'Coordenador não encontrado!' });
     }
 
-    const { name, email, password } = await coordinator.update(req.body);
-    return res.json({
-      id,
-      name,
-      email,
-      password,
-    });
+    if( email !== coordinator.email){
+      const userExist = await coordinator.findOne({
+        where: { email },
+      });
+      if(userExist){
+        return res.status(400).json({ error: 'E-mail já cadastrado!'})
+      }
+    }
+      
+    if (
+      (oldPassword && !(await coordinator.checkPassword(oldPassword)))
+    ) {
+      return res.status(401).json({ error: 'Senha incorreta.' });
+    }
+    
+    await coordinator.update({name, email, password});
+    return res.sendStatus(204);
   }
 
 }

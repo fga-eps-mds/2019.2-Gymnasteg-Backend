@@ -33,11 +33,11 @@ module.exports = {
         references: { model: 'athletes', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
-        allowNull: true,
+        allowNull: false,
       },
 
       type_punctuation: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('Execution', 'Difficulty'),
         allowNull: false,
       },
 

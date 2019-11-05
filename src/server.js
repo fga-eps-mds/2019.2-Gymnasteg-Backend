@@ -152,6 +152,12 @@ io.on('connection', async socket => {
           insertVote('Execution');
           insertVote('Difficulty');
 
+          io.to(voteRegisterSocket.stand).emit('newJudgeVote', {
+            judgesWhoVoted: Object.keys(
+              votings[voteRegisterSocket.stand].judgeVotes
+            ),
+          });
+
           // Wait until all judges voted
           if (
             judge.stands.qtd_judge ===

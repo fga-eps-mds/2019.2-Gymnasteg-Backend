@@ -7,6 +7,7 @@ import auth from './config/auth';
 import Judge from './app/models/Judge';
 import Stand from './app/models/Stand';
 import Athlete from './app/models/Athlete';
+import Vote from './app/models/Vote';
 
 const server = require('http').createServer(app);
 
@@ -39,6 +40,7 @@ io.on('connection', async socket => {
             'category_age',
             'date_event',
             'horary',
+            'was_voted',
           ],
           include: [
             {
@@ -63,9 +65,15 @@ io.on('connection', async socket => {
 
       socket.on('voteStart', voteSocket => {
         // Judge not registered on the stand
-        if (
-          !judge.stands.find(stand => stand.dataValues.id === voteSocket.stand)
-        ) {
+        const votedStand = judge.stands.find(
+          stand => stand.dataValues.id === voteSocket.stand
+        );
+
+        if (!votedStand) {
+          return;
+          // eslint-disable-next-line no-else-return
+        } else if (votedStand.was_voted) {
+          // Stand was already voted
           return;
         }
 
@@ -100,6 +108,66 @@ io.on('connection', async socket => {
             clearInterval(votingCountdown);
           }
         }, 1000);
+
+        socket.on('registerVote', async voteRegisterSocket => {
+          // Voting needs to be happening
+          if (typeof votings[voteRegisterSocket.stand] === 'undefined') {
+            return;
+          }
+
+          votings[voteRegisterSocket.stand].judgeVotes[decoded.id] = {
+            votes: {},
+          };
+
+          function insertVote(voteType) {
+            // Checks if type of vote is specified and if the judge can do this type of vote
+            if (
+              typeof voteRegisterSocket[voteType] !== 'undefined' &&
+              (judge.judge_type === voteType ||
+                judge.judge_type === 'Execution and Difficulty')
+            ) {
+              votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
+                voteType
+              ] = voteRegisterSocket[voteType];
+            }
+          }
+
+          async function createVote(voteType) {
+            const vote =
+              votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
+                voteType
+              ];
+
+            if (typeof vote !== 'undefined') {
+              await Vote.create({
+                punctuation: vote,
+                type_punctuation: voteType,
+                fk_stand_id: voteRegisterSocket.stand,
+                fk_judge_id: decoded.id,
+                fk_athlete_id: voteRegisterSocket.athlete,
+              });
+            }
+          }
+
+          insertVote('Execution');
+          insertVote('Difficulty');
+
+          // Wait until all judges voted
+          if (
+            judge.stands.qtd_judge ===
+            Object.keys(votings[voteRegisterSocket.stand].judgeVotes).length
+          ) {
+            await createVote('Execution');
+            await createVote('Difficulty');
+            clearInterval(votingCountdown);
+            votings[voteSocket.stand] = undefined;
+            await Stand.update(
+              { was_voted: true },
+              { where: voteRegisterSocket.stand }
+            );
+            io.to(voteRegisterSocket.stand).emit('voteEnd', voteRegisterSocket);
+          }
+        });
       });
     }
   } catch (err) {

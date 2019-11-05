@@ -19,6 +19,7 @@ class Vote extends Model {
     this.belongsTo(models.Judge, { foreignKey: 'fk_judge_id', as: 'judge' });
     this.belongsTo(models.Athlete, { foreignKey: 'fk_athlete_id' });
   }
+
 }
 
 export default Vote;

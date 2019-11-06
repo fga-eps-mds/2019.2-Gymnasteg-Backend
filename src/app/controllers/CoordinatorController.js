@@ -89,10 +89,8 @@ class CoordinatorController {
       return res.status(404).json({ error: 'Coordenador não encontrado!' });
     }
 
+    const userExist = await Coordinator.findOne({ where: { email } });
     if( email !== coordinator.email){
-      const userExist = await coordinator.findOne({
-        where: { email },
-      });
       if(userExist){
         return res.status(400).json({ error: 'E-mail já cadastrado!'})
       }

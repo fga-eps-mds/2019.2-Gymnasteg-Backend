@@ -21,6 +21,27 @@ routes.post('/modalities', ModalityController.store);
 routes.put('/modalities', ModalityController.update);
 
 routes.post('/coordinators', CoordinatorController.store);
+routes.get(
+  '/coordinators/:id', 
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Acesso Negado.'
+  }),CoordinatorController.show
+);
+routes.get(
+  '/coordinators', 
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Acesso Negado.'
+  }),CoordinatorController.index
+);
+routes.put(
+  '/coordinators',   
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Acesso Negado.'
+}),CoordinatorController.update
+);
 
 routes.get(
   '/stands',

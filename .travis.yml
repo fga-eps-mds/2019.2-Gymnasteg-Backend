@@ -1,12 +1,11 @@
 sudo: required
 
-language:
+language: 
   - node_js
   - python
 
 node_js:
-  - 10
-
+  - "10.16.3"
 python:
   - "3.6"
 

@@ -11,20 +11,19 @@ python:
 
 services:
   - docker
+stages:
+  - Tests
+  - Deploy docker image stage
+  - Deploy docker image prod
+  - Upgrade rancher service
 
-before_scrip:
+before_install:
   - yarn install
   - pip install requests
 
 # install:
 #   - docker network create network-api
 #   - docker-compose up --build -d
-
-stages:
-  - Tests
-  - Deploy docker image stage
-  - Deploy docker image prod
-  - Upgrade rancher service
 
 jobs:
   include:

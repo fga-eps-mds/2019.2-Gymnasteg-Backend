@@ -1,6 +1,6 @@
 sudo: required
 
-language: 
+language:
   - node_js
   - python
 
@@ -11,6 +11,7 @@ python:
 
 services:
   - docker
+
 stages:
   - Tests
   - Deploy docker image stage
@@ -20,6 +21,8 @@ stages:
 before_install:
   - yarn install
   - pip install requests
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 
 # install:
 #   - docker network create network-api
@@ -39,22 +42,23 @@ jobs:
       if: branch = devel
       script:
         # build docker image
-        - docker build -t gymnasteg2019/frontend:homolog .
+        - docker build -t gymnasteg2019/backend:homolog .
 
         # push image to Docker Hub
-        - docker push gymnasteg2019/frontend:homolog
+        - docker push gymnasteg2019/backend:homolog
 
     - stage: "Deploy docker image prod"
       name: "Deploy docker image prod"
       if: branch = master
+      script:
         # build docker image
-        - docker build -t gymnasteg2019/frontend:prod .
+        - docker build -t gymnasteg2019/backend:prod .
 
         # push image to Docker Hub
-        - docker push gymnasteg2019/frontend:prod
+        - docker push gymnasteg2019/backend:prod
 
-    - stage: "Upgrade service"
-      name: "Upgrade service"
+    - stage: "Upgrade rancher service"
+      name: "Upgrade rancher service"
       if: branch = develop || branch = master
       script: python ./scripts/upgrade_service.py
 

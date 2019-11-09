@@ -59,7 +59,7 @@ jobs:
 
     - stage: "Upgrade rancher service"
       name: "Upgrade rancher service"
-      if: branch = develop || branch = master
+#       if: branch = develop || branch = master
       script: python ./scripts/upgrade_service.py
 
 after_script:

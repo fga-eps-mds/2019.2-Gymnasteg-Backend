@@ -68,9 +68,13 @@ describe('User', () => {
 
   it('A rota post/bancas deve retonar uma id de confirmação de cadastro de banca', async () => {
     const { id } = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const stand = await factory.attrs('Stand', {
       fk_modality_id: id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     });
 
     const response = await request(app)
@@ -98,6 +102,8 @@ describe('User', () => {
 
   it('A rota put/bancas deve atualizar uma banca com as informações passada via post', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const {
       id,
@@ -120,6 +126,8 @@ describe('User', () => {
       date_event,
       horary,
       fk_modality_id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     };
 
     const response = await request(app)
@@ -132,6 +140,8 @@ describe('User', () => {
 
   it('A rota put/bancas deve apresentar mensagem de erro de validação das informações', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const {
       id,
@@ -154,6 +164,8 @@ describe('User', () => {
       date_event,
       horary,
       fk_modality_id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     };
 
     const response = await request(app)
@@ -166,10 +178,14 @@ describe('User', () => {
 
   it('A rota put/bancas deve apresentar mensagem de erro de Banca não existe', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const stand = await factory.attrs('Stand', {
       id: -1,
       fk_modality_id: modality.id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     });
 
     const response = await request(app)

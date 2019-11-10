@@ -1,25 +1,66 @@
-language: node_js
-
-node_js:
-  - 10
-
 sudo: required
 
-# services:
-#   - docker
+language:
+  - node_js
+  - python
 
-before_scrip:
+node_js:
+  - "10.16.3"
+python:
+  - "3.6"
+
+services:
+  - docker
+
+stages:
+  - Tests
+  - Deploy docker image stage
+  - Deploy docker image prod
+  - Upgrade rancher service
+
+before_install:
   - yarn install
+  - pip install requests
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 
 # install:
 #   - docker network create network-api
 #   - docker-compose up --build -d
 
-script:
-  # - docker exec -it web yarn test
-  - yarn test
-  - ./node_modules/.bin/codecov -t ${CODECOV_API_TOKEN}
+jobs:
+  include:
+    - stage: "Tests"
+      name: "Tests"
+      script:
+        # run lint and tests
+        -  yarn test
+        - ./node_modules/.bin/codecov -t ${CODECOV_TOKEN}
 
+    - stage: "Deploy docker image stage"
+      name: "Deploy docker image stage"
+#       if: branch = devel
+      script:
+        # build docker image
+        - docker build -t gymnasteg2019/backend:homolog .
+
+        # push image to Docker Hub
+        - docker push gymnasteg2019/backend:homolog
+
+    - stage: "Deploy docker image prod"
+      name: "Deploy docker image prod"
+      if: branch = master
+      script:
+        # build docker image
+        - docker build -t gymnasteg2019/backend:prod .
+
+        # push image to Docker Hub
+        - docker push gymnasteg2019/backend:prod
+
+    - stage: "Upgrade rancher service"
+      name: "Upgrade rancher service"
+#       if: branch = develop || branch = master
+      script: python ./scripts/upgrade_service.py
 
 after_script:
 #   - docker-compose down

@@ -55,7 +55,16 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+# .env
 
 # next.js build output
 .next
+
+#dados
+dados/
+
+#datas test
+__tests__/database.sqlite
+
+#authentication secrets
+src/config/auth.js

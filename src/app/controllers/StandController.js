@@ -109,6 +109,8 @@ class StandController {
 
     const { judges, athletes, ...data } = req.body;
 
+    data.fk_coordinator_id = req.userId;
+
     const stand = await Stand.create(data);
 
     stand.setAthletes(athletes);

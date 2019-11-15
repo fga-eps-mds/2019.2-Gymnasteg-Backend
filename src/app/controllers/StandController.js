@@ -58,6 +58,7 @@ class StandController {
     }
 
     const { id } = req.params;
+
     const stand = await Stand.findByPk(id, {
       attributes: [
         'id',
@@ -104,6 +105,12 @@ class StandController {
         .positive()
         .integer()
         .min(1),
+      judges: Yup.array(Yup.number())
+        .min(1)
+        .required(),
+      athletes: Yup.array(Yup.number())
+        .min(1)
+        .required(),
       sex_modality: Yup.string().required(),
       category_age: Yup.string().required(),
       date_event: Yup.date().required(),
@@ -143,6 +150,12 @@ class StandController {
         .positive()
         .integer()
         .min(1),
+      judges: Yup.array(Yup.number())
+        .min(1)
+        .required(),
+      athletes: Yup.array(Yup.number())
+        .min(1)
+        .required(),
       sex_modality: Yup.string().required(),
       category_age: Yup.string().required(),
       date_event: Yup.date().required(),
@@ -159,7 +172,7 @@ class StandController {
         .json({ error: 'Falha na validação das informações' });
     }
 
-    const { id } = req.body;
+    const { judges, athletes, id } = req.body;
 
     const stand = await Stand.findByPk(id);
 
@@ -176,6 +189,9 @@ class StandController {
       horary,
       fk_modality_id,
     } = await stand.update(req.body);
+
+    stand.setAthletes(athletes);
+    stand.setJudges(judges);
 
     return res.json({
       id,

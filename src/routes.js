@@ -22,25 +22,28 @@ routes.put('/modalities', ModalityController.update);
 
 routes.post('/coordinators', CoordinatorController.store);
 routes.get(
-  '/coordinators/:id', 
+  '/coordinators/:id',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-  }),CoordinatorController.show
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.show
 );
 routes.get(
-  '/coordinators', 
+  '/coordinators',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-  }),CoordinatorController.index
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.index
 );
 routes.put(
-  '/coordinators',   
+  '/coordinators',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-}),CoordinatorController.update
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.update
 );
 
 routes.get(

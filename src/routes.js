@@ -105,6 +105,14 @@ routes.get(
   JudgeManagement.show
 );
 
+routes.delete(
+  '/judges',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+  }),
+  JudgeManagement.destroy
+);
+
 routes.post('/sessions', SessionController.store);
 
 routes.put('/users', JudgeManagement.update);

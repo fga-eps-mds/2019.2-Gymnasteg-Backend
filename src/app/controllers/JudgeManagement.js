@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import PasswordGenerator from 'password-generator';
 
 import Judge from '../models/Judge';
@@ -119,7 +120,34 @@ module.exports = {
       return res.status(500).send('Não foi possível cadastrar o árbitro.');
     }
   },
+
   async update(req, res) {
     return res.json({ ok: true });
+  },
+
+  async destroy(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.body;
+
+    const judge = await Judge.findByPk(id);
+
+    if (!judge) {
+      return res.json({ error: 'Árbitro não existe.' });
+    }
+
+    await judge.destroy();
+
+    return res.status(200).json({ message: 'Exclusão foi bem sucedida.' });
   },
 };

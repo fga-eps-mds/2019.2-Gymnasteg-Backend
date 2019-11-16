@@ -48,17 +48,14 @@ class CoordinatorController {
     }
 
     const id = req.userId;
-    
+
     const coordinator = await Coordinator.findByPk(id, {
-      attributes: [
-        'name',
-        'email',
-      ],
+      attributes: ['name', 'email'],
     });
     if (!coordinator) {
       return res.status(404).json({ error: 'Coordenador não existe' });
     }
-    
+
     return res.json(coordinator);
   }
 
@@ -80,7 +77,7 @@ class CoordinatorController {
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Falha de Validação!' });
     }
-    
+
     const { name, email, oldPassword, password } = req.body;
     const id = req.userId;
     const coordinator = await Coordinator.findByPk(id);
@@ -90,22 +87,19 @@ class CoordinatorController {
     }
 
     const userExist = await Coordinator.findOne({ where: { email } });
-    if( email !== coordinator.email){
-      if(userExist){
-        return res.status(400).json({ error: 'E-mail já cadastrado!'})
+    if (email !== coordinator.email) {
+      if (userExist) {
+        return res.status(400).json({ error: 'E-mail já cadastrado!' });
       }
     }
-      
-    if (
-      (oldPassword && !(await coordinator.checkPassword(oldPassword)))
-    ) {
+
+    if (oldPassword && !(await coordinator.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Senha incorreta.' });
     }
-    
-    await coordinator.update({name, email, password});
+
+    await coordinator.update({ name, email, password });
     return res.sendStatus(204);
   }
-
 }
 
 export default new CoordinatorController();

@@ -13,6 +13,7 @@ module.exports = {
         allowNull: false,
         references: { model: 'stands', key: 'id' },
         onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
 
       fk_judge_id: {
@@ -20,6 +21,7 @@ module.exports = {
         allowNull: false,
         references: { model: 'judges', key: 'id' },
         onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
 
       created_at: {

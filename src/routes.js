@@ -137,7 +137,22 @@ routes.put(
   }),
   AthleteController.update
 );
+routes.delete(
+  '/athletes',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  AthleteController.destroy
+);
 
-routes.get('/ranking/stand/:id_stand', RankingController.show);
+routes.get(
+  '/ranking/stand/:id_stand',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  RankingController.show
+);
 
 export default routes;

@@ -112,6 +112,32 @@ class AthleteController {
       date_born,
     });
   }
+
+  async destroy(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.body;
+
+    const athlete = await Athlete.findByPk(id);
+
+    if (!athlete) {
+      return res.json({ error: 'Atleta não existe.' });
+    }
+
+    await athlete.destroy();
+
+    return res.status(200).json({ message: 'Exclusão foi bem sucedida.' });
+  }
 }
 
 export default new AthleteController();

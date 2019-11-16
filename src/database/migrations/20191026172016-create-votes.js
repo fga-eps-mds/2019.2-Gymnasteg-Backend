@@ -17,23 +17,21 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: 'stands', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
+        onDelete: 'CASCADE',
       },
 
       fk_judge_id: {
         type: Sequelize.INTEGER,
         references: { model: 'judges', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'CASCADE',
       },
 
       fk_athlete_id: {
         type: Sequelize.INTEGER,
         references: { model: 'athletes', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
+        onDelete: 'CASCADE',
       },
 
       type_punctuation: {

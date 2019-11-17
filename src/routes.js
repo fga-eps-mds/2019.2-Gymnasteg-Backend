@@ -106,7 +106,7 @@ routes.get(
 );
 
 routes.delete(
-  '/judges',
+  '/judges/:id',
   AuthMiddleware({
     isCoordinatorRoute: true,
   }),
@@ -146,7 +146,7 @@ routes.put(
   AthleteController.update
 );
 routes.delete(
-  '/athletes',
+  '/athletes/:id',
   AuthMiddleware({
     isCoordinatorRoute: true,
     onlyNeedsValidTokens: true,

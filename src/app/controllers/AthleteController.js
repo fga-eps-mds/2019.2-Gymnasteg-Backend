@@ -120,18 +120,18 @@ class AthleteController {
         .positive(),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
         .json({ error: 'Falha na validação das informações' });
     }
 
-    const { id } = req.body;
+    const { id } = req.params;
 
     const athlete = await Athlete.findByPk(id);
 
     if (!athlete) {
-      return res.json({ error: 'Atleta não existe.' });
+      return res.status(400).json({ error: 'Atleta não existe.' });
     }
 
     await athlete.destroy();

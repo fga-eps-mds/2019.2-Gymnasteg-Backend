@@ -61,7 +61,6 @@ routes.get(
   }),
   StandController.show
 );
-
 routes.post(
   '/stands',
   AuthMiddleware({
@@ -77,6 +76,14 @@ routes.put(
     authenticationErrorMessage: 'Árbitros não podem alterar as bancas.',
   }),
   StandController.update
+);
+routes.delete(
+  '/stands/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Requisição negada.',
+  }),
+  StandController.destroy
 );
 
 routes.get(
@@ -138,6 +145,13 @@ routes.put(
   AthleteController.update
 );
 
-routes.get('/ranking/stand/:id_stand', RankingController.show);
+routes.get(
+  '/ranking/stand/:id_stand',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  RankingController.show
+);
 
 export default routes;

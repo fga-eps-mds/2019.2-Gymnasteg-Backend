@@ -112,6 +112,14 @@ routes.get(
   JudgeManagement.show
 );
 
+routes.delete(
+  '/judges/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+  }),
+  JudgeManagement.destroy
+);
+
 routes.post('/sessions', SessionController.store);
 
 routes.put('/users', JudgeManagement.update);
@@ -143,6 +151,14 @@ routes.put(
     onlyNeedsValidTokens: true,
   }),
   AthleteController.update
+);
+routes.delete(
+  '/athletes/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  AthleteController.destroy
 );
 
 routes.get(

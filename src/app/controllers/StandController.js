@@ -189,6 +189,32 @@ class StandController {
       fk_modality_id,
     });
   }
+
+  async destroy(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações' });
+    }
+
+    const { id } = req.params;
+
+    const stand = await Stand.findByPk(id);
+
+    if (!stand) {
+      return res.status(400).json({ error: 'Banca não existe.' });
+    }
+
+    await stand.destroy();
+
+    return res.status(200).json({ message: 'Exclusão foi bem sucedida.' });
+  }
 }
 
 export default new StandController();

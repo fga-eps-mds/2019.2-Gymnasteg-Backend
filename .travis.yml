@@ -39,7 +39,7 @@ jobs:
 
     - stage: "Deploy docker image stage"
       name: "Deploy docker image stage"
-#       if: branch = devel
+      if: branch = devel
       script:
         # build docker image
         - docker build -t gymnasteg2019/backend:homolog .
@@ -59,7 +59,7 @@ jobs:
 
     - stage: "Upgrade rancher service"
       name: "Upgrade rancher service"
-#       if: branch = develop || branch = master
+      if: branch = develop || branch = master
       script: python ./scripts/upgrade_service.py
 
 after_script:

@@ -16,6 +16,7 @@ class StandController {
         'date_event',
         'horary',
         'fk_modality_id',
+        'fk_coordinator_id',
       ],
       include: [
         {
@@ -36,6 +37,7 @@ class StandController {
           attributes: ['id', 'type'],
         },
       ],
+      where: { fk_coordinator_id: req.userId },
     });
 
     return res.json(stands);
@@ -58,6 +60,17 @@ class StandController {
     const { id } = req.params;
 
     const stand = await Stand.findByPk(id, {
+      attributes: [
+        'id',
+        'num_stand',
+        'qtd_judge',
+        'sex_modality',
+        'category_age',
+        'date_event',
+        'horary',
+        'fk_modality_id',
+        'fk_coordinator_id',
+      ],
       include: [
         {
           model: Athlete,
@@ -115,6 +128,8 @@ class StandController {
     }
 
     const { judges, athletes, ...data } = req.body;
+
+    data.fk_coordinator_id = req.userId;
 
     const stand = await Stand.create(data);
 

@@ -8,6 +8,7 @@ import Judge from './app/models/Judge';
 import Stand from './app/models/Stand';
 import Athlete from './app/models/Athlete';
 import Vote from './app/models/Vote';
+import Modality from './app/models/Modality';
 
 const server = require('http').createServer(app);
 
@@ -44,10 +45,20 @@ io.on('connection', async socket => {
           ],
           include: [
             {
+              model: Judge,
+              as: 'judges',
+              attributes: ['name', 'id'],
+            },
+            {
               model: Athlete,
               as: 'athletes',
               attributes: ['name', 'gender', 'date_born'],
               through: { attributes: [] },
+            },
+            {
+              model: Modality,
+              as: 'modality',
+              attributes: ['type'],
             },
           ],
         },
@@ -61,6 +72,46 @@ io.on('connection', async socket => {
 
       socket.on('disconnect', () => {
         connectedJudges[decoded.id] = undefined;
+      });
+
+      const findJudgesWhoNeedToVote = stand => {
+        const allJudges = stand.judges.map(standJudge => ({
+          id: standJudge.id,
+          name: standJudge.name,
+        }));
+        const judgesWhoVoted = new Set(
+          Object.keys(votings[stand.id].judgeVotes)
+        );
+
+        const missingJudges = allJudges
+          .filter(standJudge => !judgesWhoVoted.has(standJudge.id.toString()))
+          .map(standJudge => standJudge.name);
+
+        return missingJudges;
+      };
+
+      socket.on('getVoteData', callback => {
+        judge.stands.forEach(stand => {
+          if (typeof votings[stand.id] !== 'undefined') {
+            callback({
+              stand: stand.id,
+              modality: stand.modality.type,
+              voteType: judge.judge_type,
+              athlete: {
+                name: votings[stand.id].id,
+                sex: stand.sex_modality,
+              },
+            });
+          }
+        });
+      });
+
+      socket.on('getJudgesWhoNeedToVote', callback => {
+        judge.stands.forEach(stand => {
+          if (typeof votings[stand.id] !== 'undefined') {
+            callback(findJudgesWhoNeedToVote(stand));
+          }
+        });
       });
 
       socket.on('voteStart', voteSocket => {
@@ -108,72 +159,84 @@ io.on('connection', async socket => {
             clearInterval(votingCountdown);
           }
         }, 1000);
+      });
 
-        socket.on('registerVote', async voteRegisterSocket => {
-          // Voting needs to be happening
-          if (typeof votings[voteRegisterSocket.stand] === 'undefined') {
-            return;
-          }
+      socket.on('registerVote', async voteRegisterSocket => {
+        // Judge not registered on the stand
+        const votedStand = judge.stands.find(
+          stand => stand.dataValues.id === voteRegisterSocket.stand
+        );
 
-          votings[voteRegisterSocket.stand].judgeVotes[decoded.id] = {
-            votes: {},
-          };
+        if (!votedStand) {
+          return;
+          // eslint-disable-next-line no-else-return
+        } else if (votedStand.was_voted) {
+          // Stand was already voted
+          return;
+        }
 
-          function insertVote(voteType) {
-            // Checks if type of vote is specified and if the judge can do this type of vote
-            if (
-              typeof voteRegisterSocket[voteType] !== 'undefined' &&
-              (judge.judge_type === voteType ||
-                judge.judge_type === 'Execution and Difficulty')
-            ) {
-              votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
-                voteType
-              ] = voteRegisterSocket[voteType];
-            }
-          }
+        // Voting needs to be happening
+        if (typeof votings[voteRegisterSocket.stand] === 'undefined') {
+          return;
+        }
 
-          async function createVote(voteType) {
-            const vote =
-              votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
-                voteType
-              ];
+        votings[voteRegisterSocket.stand].judgeVotes[decoded.id] = {
+          votes: {},
+        };
 
-            if (typeof vote !== 'undefined') {
-              await Vote.create({
-                punctuation: vote,
-                type_punctuation: voteType,
-                fk_stand_id: voteRegisterSocket.stand,
-                fk_judge_id: decoded.id,
-                fk_athlete_id: voteRegisterSocket.athlete,
-              });
-            }
-          }
-
-          insertVote('Execution');
-          insertVote('Difficulty');
-
-          io.to(voteRegisterSocket.stand).emit('newJudgeVote', {
-            judgesWhoVoted: Object.keys(
-              votings[voteRegisterSocket.stand].judgeVotes
-            ),
-          });
-
-          // Wait until all judges voted
+        function insertVote(voteType) {
+          // Checks if type of vote is specified and if the judge can do this type of vote
           if (
-            judge.stands.qtd_judge ===
-            Object.keys(votings[voteRegisterSocket.stand].judgeVotes).length
+            typeof voteRegisterSocket[voteType] !== 'undefined' &&
+            (judge.judge_type === voteType ||
+              judge.judge_type === 'Execution and Difficulty')
           ) {
-            await createVote('Execution');
-            await createVote('Difficulty');
-            clearInterval(votingCountdown);
-            votings[voteSocket.stand] = undefined;
-            await Stand.update(
-              { was_voted: true },
-              { where: voteRegisterSocket.stand }
-            );
-            io.to(voteRegisterSocket.stand).emit('voteEnd', voteRegisterSocket);
+            votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
+              voteType
+            ] = voteRegisterSocket[voteType];
           }
+        }
+
+        async function createVote(voteType) {
+          const vote =
+            votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
+              voteType
+            ];
+
+          if (typeof vote !== 'undefined') {
+            await Vote.create({
+              punctuation: vote,
+              type_punctuation: voteType,
+              fk_stand_id: voteRegisterSocket.stand,
+              fk_judge_id: decoded.id,
+              fk_athlete_id: voteRegisterSocket.athlete,
+            });
+          }
+        }
+
+        insertVote('Execution');
+        insertVote('Difficulty');
+
+        io.to(voteRegisterSocket.stand).emit('newJudgeVote', {
+          judgesWhoNeedToVote: findJudgesWhoNeedToVote(
+            judge.stands.find(stand => stand.id === voteRegisterSocket.stand)
+          ),
         });
+
+        // Wait until all judges voted
+        if (
+          judge.stands.qtd_judge ===
+          Object.keys(votings[voteRegisterSocket.stand].judgeVotes).length
+        ) {
+          await createVote('Execution');
+          await createVote('Difficulty');
+          votings[voteRegisterSocket.stand] = undefined;
+          await Stand.update(
+            { was_voted: true },
+            { where: voteRegisterSocket.stand }
+          );
+          io.to(voteRegisterSocket.stand).emit('voteEnd', voteRegisterSocket);
+        }
       });
     }
   } catch (err) {

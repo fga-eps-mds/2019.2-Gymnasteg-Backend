@@ -41,7 +41,6 @@ io.on('connection', async socket => {
             'category_age',
             'date_event',
             'horary',
-            'was_voted',
           ],
           include: [
             {
@@ -52,13 +51,13 @@ io.on('connection', async socket => {
             {
               model: Athlete,
               as: 'athletes',
-              attributes: ['name', 'gender', 'date_born'],
+              attributes: ['id', 'name', 'gender', 'date_born'],
               through: { attributes: [] },
             },
             {
               model: Modality,
               as: 'modality',
-              attributes: ['type'],
+              attributes: ['type', 'url_image'],
             },
           ],
         },
@@ -96,9 +95,11 @@ io.on('connection', async socket => {
             callback({
               stand: stand.id,
               modality: stand.modality.type,
+              modality_url: stand.modality.url_image,
               voteType: judge.judge_type,
               athlete: {
-                name: votings[stand.id].id,
+                id: votings[stand.id].id,
+                name: votings[stand.id].name,
                 sex: stand.sex_modality,
               },
             });
@@ -135,6 +136,7 @@ io.on('connection', async socket => {
 
         votings[voteSocket.stand] = {
           id: voteSocket.athlete,
+          name: voteSocket.athleteName,
           judgeVotes: {},
         };
 
@@ -154,7 +156,6 @@ io.on('connection', async socket => {
           if (secondsRemaining <= 0) {
             votings[voteSocket.stand] = undefined;
             io.to(voteSocket.stand).emit('voteCancel', voteSocket);
-            // Inserir votos no banco de dados caso todos tenham votado
             votings[voteSocket.stand] = undefined;
             clearInterval(votingCountdown);
           }
@@ -181,6 +182,7 @@ io.on('connection', async socket => {
         }
 
         votings[voteRegisterSocket.stand].judgeVotes[decoded.id] = {
+          name: judge.name,
           votes: {},
         };
 
@@ -198,20 +200,22 @@ io.on('connection', async socket => {
         }
 
         async function createVote(voteType) {
-          const vote =
-            votings[voteRegisterSocket.stand].judgeVotes[decoded.id].votes[
-              voteType
-            ];
+          Object.entries(votings[voteRegisterSocket.stand].judgeVotes).forEach(
+            async idAndJudgeVote => {
+              const [judgeVoteId, judgeVote] = idAndJudgeVote;
+              const vote = judgeVote.votes[voteType];
 
-          if (typeof vote !== 'undefined') {
-            await Vote.create({
-              punctuation: vote,
-              type_punctuation: voteType,
-              fk_stand_id: voteRegisterSocket.stand,
-              fk_judge_id: decoded.id,
-              fk_athlete_id: voteRegisterSocket.athlete,
-            });
-          }
+              if (typeof vote !== 'undefined') {
+                await Vote.create({
+                  punctuation: vote,
+                  type_punctuation: voteType,
+                  fk_stand_id: voteRegisterSocket.stand,
+                  fk_judge_id: judgeVoteId,
+                  fk_athlete_id: voteRegisterSocket.athlete,
+                });
+              }
+            }
+          );
         }
 
         insertVote('Execution');
@@ -225,17 +229,17 @@ io.on('connection', async socket => {
 
         // Wait until all judges voted
         if (
-          judge.stands.qtd_judge ===
+          votedStand.qtd_judge ===
           Object.keys(votings[voteRegisterSocket.stand].judgeVotes).length
         ) {
           await createVote('Execution');
           await createVote('Difficulty');
+
+          io.to(votedStand.id).emit('voteEnd', {
+            judgesData: Object.values(votings[votedStand.id].judgeVotes),
+          });
+
           votings[voteRegisterSocket.stand] = undefined;
-          await Stand.update(
-            { was_voted: true },
-            { where: voteRegisterSocket.stand }
-          );
-          io.to(voteRegisterSocket.stand).emit('voteEnd', voteRegisterSocket);
         }
       });
     }

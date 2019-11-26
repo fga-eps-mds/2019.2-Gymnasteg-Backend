@@ -10,7 +10,6 @@ class Stand extends Model {
         category_age: Sequelize.STRING,
         date_event: Sequelize.DATEONLY,
         horary: Sequelize.TIME,
-        was_voted: Sequelize.BOOLEAN,
       },
       {
         sequelize,

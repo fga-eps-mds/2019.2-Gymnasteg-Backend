@@ -6,6 +6,7 @@ import Database from '../../database';
 import Stand from '../models/Stand';
 import Modality from '../models/Modality';
 import Athlete from '../models/Athlete';
+import Vote from '../models/Vote';
 
 module.exports = {
   async index(req, res) {
@@ -68,6 +69,7 @@ module.exports = {
               'category_age',
               'date_event',
               'horary',
+              'was_voted',
             ],
             through: { attributes: [] },
             include: [
@@ -79,8 +81,15 @@ module.exports = {
               {
                 model: Athlete,
                 as: 'athletes',
-                attributes: ['name', 'gender', 'date_born'],
+                attributes: ['id', 'name', 'gender', 'date_born'],
                 through: { attributes: [] },
+                include: [
+                  {
+                    model: Vote,
+                    as: 'votes',
+                    attributes: ['fk_stand_id'],
+                  },
+                ],
               },
             ],
           },

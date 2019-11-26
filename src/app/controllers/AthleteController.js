@@ -91,6 +91,7 @@ class AthleteController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      id: Yup.string().required(),
       name: Yup.string().required(),
       email: Yup.string().required(),
       gender: Yup.string().required(),
@@ -108,7 +109,7 @@ class AthleteController {
     const athlete = await Athlete.findByPk(id);
 
     if (!athlete) {
-      return res.json({ error: 'Atleta não exite.' });
+      return res.json({ error: 'Atleta não existe.' });
     }
 
     if (req.body.email !== athlete.dataValues.email) {

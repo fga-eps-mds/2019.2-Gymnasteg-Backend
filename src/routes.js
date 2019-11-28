@@ -99,15 +99,28 @@ routes.post(
   JudgeManagement.create
 );
 routes.get(
+  '/judges/:id',
+  AuthMiddleware({
+    onlyNeedsValidTokens: true,
+  }),
+  JudgeManagement.show
+);
+routes.get(
   '/judgeData/',
   AuthMiddleware({
     isCoordinatorRoute: false,
     authenticationErrorMessage:
       'Coordenadores não possuem bancas para avaliar.',
   }),
-  JudgeManagement.show
+  JudgeManagement.showJudge
 );
-
+routes.put(
+  '/judges',
+  AuthMiddleware({
+    onlyNeedsValidTokens: true,
+  }),
+  JudgeManagement.update
+);
 routes.delete(
   '/judges/:id',
   AuthMiddleware({

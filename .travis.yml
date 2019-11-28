@@ -34,8 +34,8 @@ jobs:
       name: "Tests"
       script:
         # run lint and tests
-        -  yarn test
-        - ./node_modules/.bin/codecov -t ${CODECOV_TOKEN}
+        - yarn run test -u --coverage
+        - ./node_modules/.bin/codecov -t ${CODECOV_API_TOKEN}
 
     - stage: "Deploy docker image stage"
       name: "Deploy docker image stage"

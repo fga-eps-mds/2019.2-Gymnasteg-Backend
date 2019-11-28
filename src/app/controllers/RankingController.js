@@ -18,25 +18,21 @@ class RankingController {
 
     const { id_stand } = req.params;
 
-    try {
-      const votes = await Vote.findAll({
-        where: {
-          fk_stand_id: id_stand,
+    const votes = await Vote.findAll({
+      where: {
+        fk_stand_id: id_stand,
+      },
+      include: [
+        {
+          model: Judge,
+          as: 'judge',
+          attributes: ['name'],
         },
-        include: [
-          {
-            model: Judge,
-            as: 'judge',
-            attributes: ['name'],
-          },
-        ],
-        attributes: ['punctuation', 'type_punctuation', 'fk_athlete_id'],
-      });
+      ],
+      attributes: ['punctuation', 'type_punctuation', 'fk_athlete_id'],
+    });
 
-      return res.json(votes);
-    } catch (error) {
-      return res.status(500).json({ error: 'Erro de requisição!' });
-    }
+    return res.json(votes);
   }
 }
 

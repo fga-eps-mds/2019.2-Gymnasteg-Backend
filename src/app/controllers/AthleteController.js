@@ -30,7 +30,7 @@ class AthleteController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações!' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;
@@ -63,7 +63,7 @@ class AthleteController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: 'Falha na validação das informações!',
+        error: 'Falha na validação das informações.',
       });
     }
 
@@ -101,7 +101,7 @@ class AthleteController {
     if (!(await schema.isValid(req.body))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.body;
@@ -134,7 +134,7 @@ class AthleteController {
 
     const { name, email, gender, date_born } = await athlete.update(req.body);
 
-    return res.json({
+    return res.status(200).json({
       id,
       name,
       email,
@@ -153,7 +153,7 @@ class AthleteController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;

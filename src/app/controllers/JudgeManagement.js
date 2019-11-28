@@ -60,7 +60,7 @@ module.exports = {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação de informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;
@@ -156,7 +156,9 @@ module.exports = {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json('Falha na validação das informações');
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.body;
@@ -164,7 +166,7 @@ module.exports = {
     const judge = await Judge.findByPk(id);
 
     if (!judge) {
-      return res.json({ error: 'Árbitro não existe' });
+      return res.json({ error: 'Árbitro não existe!' });
     }
 
     if (req.body.email !== judge.dataValues.email) {
@@ -208,7 +210,7 @@ module.exports = {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;
@@ -216,7 +218,7 @@ module.exports = {
     const judge = await Judge.findByPk(id);
 
     if (!judge) {
-      return res.json({ error: 'Árbitro não existe.' });
+      return res.json({ error: 'Árbitro não existe!' });
     }
 
     await judge.destroy();

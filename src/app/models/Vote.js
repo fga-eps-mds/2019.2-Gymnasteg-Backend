@@ -5,7 +5,7 @@ class Vote extends Model {
     super.init(
       {
         punctuation: Sequelize.DOUBLE,
-        type_punctuation: Sequelize.STRING,
+        type_punctuation: Sequelize.ENUM('Execution', 'Difficulty'),
       },
       {
         sequelize,

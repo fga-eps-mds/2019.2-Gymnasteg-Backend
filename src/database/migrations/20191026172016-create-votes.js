@@ -35,7 +35,7 @@ module.exports = {
       },
 
       type_punctuation: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('Execution', 'Difficulty'),
         allowNull: false,
       },
 

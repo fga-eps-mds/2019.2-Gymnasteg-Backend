@@ -23,6 +23,11 @@ class Athlete extends Model {
       as: 'stands',
       foreignKey: 'fk_athlete_id',
     });
+
+    this.hasMany(models.Vote, {
+      as: 'votes',
+      foreignKey: 'fk_athlete_id',
+    });
   }
 }
 

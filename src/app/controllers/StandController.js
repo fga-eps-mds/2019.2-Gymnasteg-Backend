@@ -54,7 +54,7 @@ class StandController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;
@@ -88,7 +88,7 @@ class StandController {
     });
 
     if (!stand) {
-      return res.status(400).json({ error: 'Banca não existe' });
+      return res.status(400).json({ error: 'Banca não existe.' });
     }
 
     return res.json(stand);
@@ -123,7 +123,7 @@ class StandController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: 'Falha na validação das informações',
+        error: 'Falha na validação das informações.',
       });
     }
 
@@ -169,7 +169,7 @@ class StandController {
     if (!(await schema.isValid(req.body))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { judges, athletes, id } = req.body;
@@ -177,7 +177,7 @@ class StandController {
     const stand = await Stand.findByPk(id);
 
     if (!stand) {
-      return res.json({ error: 'Banca não existe' });
+      return res.json({ error: 'Banca não existe.' });
     }
 
     const {
@@ -215,7 +215,7 @@ class StandController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;

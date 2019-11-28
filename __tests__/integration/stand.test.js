@@ -97,7 +97,7 @@ describe('User', () => {
       .post('/stands')
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
-    expect(response.body.error).toBe('Falha na validação das informações');
+    expect(response.body.error).toBe('Falha na validação das informações.');
   });
 
   it('A rota put/bancas deve atualizar uma banca com as informações passada via post', async () => {
@@ -173,7 +173,7 @@ describe('User', () => {
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
-    expect(response.body.error).toBe('Falha na validação das informações');
+    expect(response.body.error).toBe('Falha na validação das informações.');
   });
 
   it('A rota put/bancas deve apresentar mensagem de erro de Banca não existe', async () => {
@@ -193,7 +193,7 @@ describe('User', () => {
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
-    expect(response.body.error).toBe('Banca não existe');
+    expect(response.body.error).toBe('Banca não existe.');
   });
 
   it('A rota delete/stands deve excluir a banca cadastrada com um retorno de estado 200', async () => {
@@ -217,13 +217,13 @@ describe('User', () => {
       .delete('/stands/-5')
       .send()
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
-    expect(response.body.error).toBe('Falha na validação das informações');
+    expect(response.body.error).toBe('Falha na validação das informações.');
   });
 
   it('A rota delete/stands deve retornar uma messagem de banca não existente', async () => {
     const modality = await factory.create('Modality');
     const coordinator = await factory.create('Coordinator');
-    const stand = await factory.create('Stand', {
+    await factory.create('Stand', {
       fk_coordinator_id: coordinator.id,
       fk_modality_id: modality.id,
     });

@@ -68,9 +68,13 @@ describe('User', () => {
 
   it('A rota post/bancas deve retonar uma id de confirmação de cadastro de banca', async () => {
     const { id } = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const stand = await factory.attrs('Stand', {
       fk_modality_id: id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     });
 
     const response = await request(app)
@@ -93,11 +97,13 @@ describe('User', () => {
       .post('/stands')
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
-    expect(response.body.error).toBe('Falha na validação das informações');
+    expect(response.body.error).toBe('Falha na validação das informações.');
   });
 
   it('A rota put/bancas deve atualizar uma banca com as informações passada via post', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const {
       id,
@@ -120,6 +126,8 @@ describe('User', () => {
       date_event,
       horary,
       fk_modality_id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     };
 
     const response = await request(app)
@@ -132,6 +140,8 @@ describe('User', () => {
 
   it('A rota put/bancas deve apresentar mensagem de erro de validação das informações', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const {
       id,
@@ -154,6 +164,8 @@ describe('User', () => {
       date_event,
       horary,
       fk_modality_id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     };
 
     const response = await request(app)
@@ -161,15 +173,19 @@ describe('User', () => {
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
-    expect(response.body.error).toBe('Falha na validação das informações');
+    expect(response.body.error).toBe('Falha na validação das informações.');
   });
 
   it('A rota put/bancas deve apresentar mensagem de erro de Banca não existe', async () => {
     const modality = await factory.create('Modality');
+    const judge = await factory.create('JudgeWithPassword');
+    const athlete = await factory.create('Athlete');
 
     const stand = await factory.attrs('Stand', {
       id: -1,
       fk_modality_id: modality.id,
+      judges: [judge.id],
+      athletes: [athlete.id],
     });
 
     const response = await request(app)
@@ -177,6 +193,46 @@ describe('User', () => {
       .send(stand)
       .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
-    expect(response.body.error).toBe('Banca não existe');
+    expect(response.body.error).toBe('Banca não existe.');
+  });
+
+  it('A rota delete/stands deve excluir a banca cadastrada com um retorno de estado 200', async () => {
+    const modality = await factory.create('Modality');
+    const coordinator = await factory.create('Coordinator');
+    const stand = await factory.create('Stand', {
+      fk_coordinator_id: coordinator.id,
+      fk_modality_id: modality.id,
+    });
+
+    const reponse = await request(app)
+      .delete(`/stands/${stand.id}`)
+      .send()
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+    expect(reponse.status).toBe(200);
+  });
+
+  it('A rota delete/stands deve retornar mensagem de error de validação por causa do id negativo', async () => {
+    const response = await request(app)
+      .delete('/stands/-5')
+      .send()
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+    expect(response.body.error).toBe('Falha na validação das informações.');
+  });
+
+  it('A rota delete/stands deve retornar uma messagem de banca não existente', async () => {
+    const modality = await factory.create('Modality');
+    const coordinator = await factory.create('Coordinator');
+    await factory.create('Stand', {
+      fk_coordinator_id: coordinator.id,
+      fk_modality_id: modality.id,
+    });
+
+    const reponse = await request(app)
+      .delete('/stands/1000')
+      .send()
+      .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+    expect(reponse.body.error).toBe('Banca não existe.');
   });
 });

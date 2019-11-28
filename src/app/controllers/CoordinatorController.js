@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import Coordinator from '../models/Coordinator';
+import Judge from '../models/Judge';
+import Athlete from '../models/Athlete';
 
 class CoordinatorController {
   async store(req, res) {
@@ -12,17 +14,24 @@ class CoordinatorController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação!' });
+      return res.status(400).json({ error: 'Falha na validação.' });
     }
-
-    const coordExists = await Coordinator.findOne({
+    const coordinatorExist = await Coordinator.findOne({
       where: { email: req.body.email },
     });
 
-    if (coordExists) {
-      return res
-        .status(400)
-        .json({ error: 'Coordenador com esse e-mail já existe!' });
+    const judgeExist = await Judge.findOne({
+      where: { email: req.body.email },
+    });
+
+    const athleteExist = await Athlete.findOne({
+      where: { email: req.body.email },
+    });
+
+    if (athleteExist || coordinatorExist || judgeExist) {
+      return res.status(400).json({
+        error: 'E-mail já cadastrado!',
+      });
     }
 
     const { id, name, email } = await Coordinator.create(req.body);
@@ -44,21 +53,18 @@ class CoordinatorController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const id = req.userId;
-    
+
     const coordinator = await Coordinator.findByPk(id, {
-      attributes: [
-        'name',
-        'email',
-      ],
+      attributes: ['name', 'email'],
     });
     if (!coordinator) {
-      return res.status(404).json({ error: 'Coordenador não existe' });
+      return res.status(404).json({ error: 'Coordenador não existe!' });
     }
-    
+
     return res.json(coordinator);
   }
 
@@ -78,9 +84,11 @@ class CoordinatorController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha de Validação!' });
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
     }
-    
+
     const { name, email, oldPassword, password } = req.body;
     const id = req.userId;
     const coordinator = await Coordinator.findByPk(id);
@@ -89,23 +97,32 @@ class CoordinatorController {
       return res.status(404).json({ error: 'Coordenador não encontrado!' });
     }
 
-    const userExist = await Coordinator.findOne({ where: { email } });
-    if( email !== coordinator.email){
-      if(userExist){
-        return res.status(400).json({ error: 'E-mail já cadastrado!'})
+    if (coordinator.dataValues.email !== req.body.email) {
+      const coordinatorExist = await Coordinator.findOne({ where: { email } });
+
+      const judgeExist = await Judge.findOne({
+        where: { email: req.body.email },
+      });
+
+      const athleteExist = await Athlete.findOne({
+        where: { email: req.body.email },
+      });
+
+      if (athleteExist || coordinatorExist || judgeExist) {
+        return res.status(400).json({
+          error: 'E-mail já cadastrado!',
+        });
       }
     }
-      
-    if (
-      (oldPassword && !(await coordinator.checkPassword(oldPassword)))
-    ) {
-      return res.status(401).json({ error: 'Senha incorreta.' });
+
+    if (oldPassword && !(await coordinator.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: 'Senha incorreta!' });
     }
-    
-    await coordinator.update({name, email, password});
+
+    await coordinator.update({ name, email, password });
+
     return res.sendStatus(204);
   }
-
 }
 
 export default new CoordinatorController();

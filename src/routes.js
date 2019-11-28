@@ -11,10 +11,6 @@ import AuthMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
 
-routes.get('/', (req, res) => {
-  return res.json({ message: 'Hello Word' });
-});
-
 routes.get('/modalities', ModalityController.index);
 routes.get('/modalities/:id', ModalityController.show);
 routes.post('/modalities', ModalityController.store);
@@ -22,25 +18,28 @@ routes.put('/modalities', ModalityController.update);
 
 routes.post('/coordinators', CoordinatorController.store);
 routes.get(
-  '/coordinators/:id', 
+  '/coordinators/:id',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-  }),CoordinatorController.show
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.show
 );
 routes.get(
-  '/coordinators', 
+  '/coordinators',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-  }),CoordinatorController.index
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.index
 );
 routes.put(
-  '/coordinators',   
+  '/coordinators',
   AuthMiddleware({
     isCoordinatorRoute: true,
-    authenticationErrorMessage: 'Acesso Negado.'
-}),CoordinatorController.update
+    authenticationErrorMessage: 'Acesso Negado.',
+  }),
+  CoordinatorController.update
 );
 
 routes.get(
@@ -58,7 +57,6 @@ routes.get(
   }),
   StandController.show
 );
-
 routes.post(
   '/stands',
   AuthMiddleware({
@@ -74,6 +72,14 @@ routes.put(
     authenticationErrorMessage: 'Árbitros não podem alterar as bancas.',
   }),
   StandController.update
+);
+routes.delete(
+  '/stands/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    authenticationErrorMessage: 'Requisição negada.',
+  }),
+  StandController.destroy
 );
 
 routes.get(
@@ -93,13 +99,34 @@ routes.post(
   JudgeManagement.create
 );
 routes.get(
+  '/judges/:id',
+  AuthMiddleware({
+    onlyNeedsValidTokens: true,
+  }),
+  JudgeManagement.show
+);
+routes.get(
   '/judgeData/',
   AuthMiddleware({
     isCoordinatorRoute: false,
     authenticationErrorMessage:
       'Coordenadores não possuem bancas para avaliar.',
   }),
-  JudgeManagement.show
+  JudgeManagement.showJudge
+);
+routes.put(
+  '/judges',
+  AuthMiddleware({
+    onlyNeedsValidTokens: true,
+  }),
+  JudgeManagement.update
+);
+routes.delete(
+  '/judges/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+  }),
+  JudgeManagement.destroy
 );
 
 routes.post('/sessions', SessionController.store);
@@ -134,7 +161,22 @@ routes.put(
   }),
   AthleteController.update
 );
+routes.delete(
+  '/athletes/:id',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  AthleteController.destroy
+);
 
-routes.get('/ranking/stand/:id_stand', RankingController.show);
+routes.get(
+  '/ranking/stand/:id_stand',
+  AuthMiddleware({
+    isCoordinatorRoute: true,
+    onlyNeedsValidTokens: true,
+  }),
+  RankingController.show
+);
 
 export default routes;

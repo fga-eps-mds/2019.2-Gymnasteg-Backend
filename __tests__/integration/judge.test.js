@@ -1,4 +1,6 @@
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import authConfig from '../../src/config/auth';
 import app from '../../src/app';
 import factory from '../factories';
 import truncate from '../util/truncate';
@@ -199,6 +201,151 @@ describe('JudgeManagement', () => {
         .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
 
       expect(response.status).toBe(409);
+    });
+  });
+
+  describe('show', () => {
+    it('Must return status 200 to successfully return a judge by id.', async () => {
+      const { id } = await factory.create('JudgeWithPassword');
+
+      const response = await request(app)
+        .get(`/judges/${id}`)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('Should return validation failure message because of the absence of get id.', async () => {
+      const response = await request(app)
+        .get('/judges/a')
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Must return non-existent judge message.', async () => {
+      const response = await request(app)
+        .get('/judges/1')
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Árbitro não existe!');
+    });
+  });
+
+  describe('showJudge', () => {
+    it('Must return a status of 200 for a judge to display by the judge session.', async () => {
+      const { id } = await factory.create('JudgeWithPassword');
+
+      const token = jwt.sign({ id, coord: false }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
+      });
+
+      const response = await request(app)
+        .get('/judgeData')
+        .set('Authentication', `Bearer ${token}`);
+
+      expect(response.status).toBe(200);
+    });
+  });
+
+  describe('update', () => {
+    it('Must return status 200 to successfully upgrade the judge.', async () => {
+      const { id, name, email, judge_type } = await factory.create(
+        'JudgeWithPassword'
+      );
+
+      const response = await request(app)
+        .put('/judges')
+        .send({
+          id,
+          name,
+          email,
+          judge_type,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('Should return error message in validating information.', async () => {
+      const { id, name, email } = await factory.create('JudgeWithPassword');
+
+      const response = await request(app)
+        .put('/judges')
+        .send({
+          id,
+          name,
+          email,
+          judge_type: 10,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Must return non-existent judge message.', async () => {
+      const { name, email, judge_type } = await factory.attrs(
+        'JudgeWithPassword'
+      );
+
+      const response = await request(app)
+        .put('/judges')
+        .send({
+          id: 1,
+          name,
+          email,
+          judge_type,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Árbitro não existe!');
+    });
+
+    it('Must return existing email message.', async () => {
+      const { email } = await factory.create('JudgeWithPassword');
+      const { id, name, judge_type } = await factory.create(
+        'JudgeWithPassword'
+      );
+
+      const response = await request(app)
+        .put('/judges')
+        .send({
+          id,
+          name,
+          email,
+          judge_type,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('E-mail já cadastrado!');
+    });
+  });
+
+  describe('destroy', () => {
+    it('Must return status 200 for judge exclusion.', async () => {
+      const { id } = await factory.create('JudgeWithPassword');
+
+      const response = await request(app)
+        .delete(`/judges/${id}`)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('Should return information validation failed message because of incorrect id.', async () => {
+      const response = await request(app)
+        .delete('/judges/a')
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Must return non-existent judge message.', async () => {
+      const response = await request(app)
+        .delete('/judges/1')
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Árbitro não existe!');
     });
   });
 });

@@ -33,6 +33,10 @@ class Stand extends Model {
       as: 'judges',
       foreignKey: 'fk_stand_id',
     });
+    this.belongsTo(models.Coordinator, {
+      as: 'coordinator',
+      foreignKey: 'fk_coordinator_id',
+    });
   }
 }
 

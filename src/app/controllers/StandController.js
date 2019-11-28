@@ -16,6 +16,7 @@ class StandController {
         'date_event',
         'horary',
         'fk_modality_id',
+        'fk_coordinator_id',
       ],
       include: [
         {
@@ -36,6 +37,7 @@ class StandController {
           attributes: ['id', 'type'],
         },
       ],
+      where: { fk_coordinator_id: req.userId },
     });
 
     return res.json(stands);
@@ -52,11 +54,23 @@ class StandController {
     if (!(await schema.isValid(req.params))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
     const { id } = req.params;
+
     const stand = await Stand.findByPk(id, {
+      attributes: [
+        'id',
+        'num_stand',
+        'qtd_judge',
+        'sex_modality',
+        'category_age',
+        'date_event',
+        'horary',
+        'fk_modality_id',
+        'fk_coordinator_id',
+      ],
       include: [
         {
           model: Athlete,
@@ -74,7 +88,7 @@ class StandController {
     });
 
     if (!stand) {
-      return res.status(400).json({ error: 'Banca não existe' });
+      return res.status(400).json({ error: 'Banca não existe.' });
     }
 
     return res.json(stand);
@@ -91,6 +105,12 @@ class StandController {
         .positive()
         .integer()
         .min(1),
+      judges: Yup.array(Yup.number())
+        .min(1)
+        .required(),
+      athletes: Yup.array(Yup.number())
+        .min(1)
+        .required(),
       sex_modality: Yup.string().required(),
       category_age: Yup.string().required(),
       date_event: Yup.date().required(),
@@ -103,11 +123,13 @@ class StandController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: 'Falha na validação das informações',
+        error: 'Falha na validação das informações.',
       });
     }
 
     const { judges, athletes, ...data } = req.body;
+
+    data.fk_coordinator_id = req.userId;
 
     const stand = await Stand.create(data);
 
@@ -128,6 +150,12 @@ class StandController {
         .positive()
         .integer()
         .min(1),
+      judges: Yup.array(Yup.number())
+        .min(1)
+        .required(),
+      athletes: Yup.array(Yup.number())
+        .min(1)
+        .required(),
       sex_modality: Yup.string().required(),
       category_age: Yup.string().required(),
       date_event: Yup.date().required(),
@@ -141,15 +169,15 @@ class StandController {
     if (!(await schema.isValid(req.body))) {
       return res
         .status(400)
-        .json({ error: 'Falha na validação das informações' });
+        .json({ error: 'Falha na validação das informações.' });
     }
 
-    const { id } = req.body;
+    const { judges, athletes, id } = req.body;
 
     const stand = await Stand.findByPk(id);
 
     if (!stand) {
-      return res.json({ error: 'Banca não existe' });
+      return res.json({ error: 'Banca não existe.' });
     }
 
     const {
@@ -162,6 +190,9 @@ class StandController {
       fk_modality_id,
     } = await stand.update(req.body);
 
+    stand.setAthletes(athletes);
+    stand.setJudges(judges);
+
     return res.json({
       id,
       num_stand,
@@ -172,6 +203,32 @@ class StandController {
       horary,
       fk_modality_id,
     });
+  }
+
+  async destroy(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
+    }
+
+    const { id } = req.params;
+
+    const stand = await Stand.findByPk(id);
+
+    if (!stand) {
+      return res.status(400).json({ error: 'Banca não existe.' });
+    }
+
+    await stand.destroy();
+
+    return res.status(200).json({ message: 'Exclusão foi bem sucedida.' });
   }
 }
 

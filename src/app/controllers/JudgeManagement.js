@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import PasswordGenerator from 'password-generator';
 
 import Judge from '../models/Judge';
@@ -5,6 +6,8 @@ import Database from '../../database';
 import Stand from '../models/Stand';
 import Modality from '../models/Modality';
 import Athlete from '../models/Athlete';
+import Vote from '../models/Vote';
+import Coordinator from '../models/Coordinator';
 
 module.exports = {
   async index(req, res) {
@@ -49,6 +52,29 @@ module.exports = {
   },
 
   async show(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
+    }
+
+    const { id } = req.params;
+    const judge = await Judge.findByPk(id);
+
+    if (!judge) {
+      return res.status(400).json({ error: 'Árbitro não existe!' });
+    }
+
+    return res.json(judge);
+  },
+
+  async showJudge(req, res) {
     const id = req.userId;
 
     try {
@@ -78,8 +104,15 @@ module.exports = {
               {
                 model: Athlete,
                 as: 'athletes',
-                attributes: ['name', 'gender', 'date_born'],
+                attributes: ['id', 'name', 'gender', 'date_born'],
                 through: { attributes: [] },
+                include: [
+                  {
+                    model: Vote,
+                    as: 'votes',
+                    attributes: ['fk_stand_id'],
+                  },
+                ],
               },
             ],
           },
@@ -119,7 +152,85 @@ module.exports = {
       return res.status(500).send('Não foi possível cadastrar o árbitro.');
     }
   },
+
   async update(req, res) {
-    return res.json({ ok: true });
+    const schema = Yup.object().shape({
+      id: Yup.string().required(),
+      name: Yup.string().required(),
+      email: Yup.string().required(),
+      judge_type: Yup.mixed()
+        .oneOf(['Execution', 'Difficulty', 'Execution and Difficulty'])
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
+    }
+
+    const { id } = req.body;
+
+    const judge = await Judge.findByPk(id);
+
+    if (!judge) {
+      return res.json({ error: 'Árbitro não existe!' });
+    }
+
+    if (req.body.email !== judge.dataValues.email) {
+      const judgeExist = await Judge.findOne({
+        where: { email: req.body.email },
+      });
+
+      const athleteExist = await Athlete.findOne({
+        where: { email: req.body.email },
+      });
+
+      const coordinatorExist = await Coordinator.findOne({
+        where: { email: req.body.email },
+      });
+
+      if (athleteExist || coordinatorExist || judgeExist) {
+        return res.status(400).json({
+          error: 'E-mail já cadastrado!',
+        });
+      }
+    }
+
+    const { name, email, judge_type, password } = await judge.update(req.body);
+
+    return res.json({
+      id,
+      name,
+      email,
+      judge_type,
+      password,
+    });
+  },
+
+  async destroy(req, res) {
+    const schema = Yup.object().shape({
+      id: Yup.number()
+        .required()
+        .positive(),
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res
+        .status(400)
+        .json({ error: 'Falha na validação das informações.' });
+    }
+
+    const { id } = req.params;
+
+    const judge = await Judge.findByPk(id);
+
+    if (!judge) {
+      return res.json({ error: 'Árbitro não existe!' });
+    }
+
+    await judge.destroy();
+
+    return res.status(200).json({ message: 'Exclusão foi bem sucedida.' });
   },
 };

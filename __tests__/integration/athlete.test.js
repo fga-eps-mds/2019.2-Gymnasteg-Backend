@@ -51,16 +51,163 @@ describe('AthleteController', () => {
 
       expect(athleteInfo.status).toBe(200);
     });
+
+    it('Should return a validation failure message.', async () => {
+      const response = await request(app)
+        .get('/athletes/a')
+        .send()
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Must return a non-existent athlete message.', async () => {
+      const response = await request(app)
+        .get('/athletes/1')
+        .send()
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Atleta não existe!');
+    });
+  });
+
+  describe('store', () => {
+    it('Must return a successfully created athlete status of 200.', async () => {
+      const athlete = await factory.attrs('Athlete');
+
+      const response = await request(app)
+        .post('/athletes')
+        .send(athlete)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('Should return validation failed message.', async () => {
+      const athlete = await factory.attrs('Athlete', {
+        gender: 'P',
+      });
+
+      const response = await request(app)
+        .post('/athletes')
+        .send(athlete)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Must return existing email message.', async () => {
+      const { email } = await factory.create('JudgeWithPassword');
+      const athlete = await factory.attrs('Athlete', {
+        email,
+      });
+
+      const response = await request(app)
+        .post('/athletes')
+        .send(athlete)
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('E-mail já cadastrado!');
+    });
   });
 
   describe('update', () => {
     it("Should be able to update Athlete's data.", async () => {
-      const athlete = await factory.create('Athlete');
+      const { id, name, email, date_born } = await factory.create('Athlete');
 
-      const athleteInfo = await request(app)
-        .put(`/athletes/${athlete.dataValues.id}`)
-        .send({ id: athlete.id })
+      const response = await request(app)
+        .put('/athletes')
+        .send({
+          id,
+          name,
+          email,
+          date_born,
+          gender: 'F',
+        })
         .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('Should return the validation error message.', async () => {
+      const { id } = await factory.create('Athlete');
+
+      const response = await request(app)
+        .put('/athletes')
+        .send({
+          id,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Falha na validação das informações.');
+    });
+
+    it('Athlete should return message does not exist.', async () => {
+      const { email, name, gender, date_born } = await factory.create(
+        'Athlete'
+      );
+
+      const response = await request(app)
+        .put('/athletes')
+        .send({
+          id: 10,
+          name,
+          email,
+          gender,
+          date_born,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('Atleta não existe.');
+    });
+
+    it('Must return existing email message.', async () => {
+      const { id, name, gender, date_born } = await factory.create('Athlete');
+      const { email } = await factory.create('JudgeWithPassword');
+
+      const response = await request(app)
+        .put('/athletes')
+        .send({
+          id,
+          name,
+          email,
+          gender,
+          date_born,
+        })
+        .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+      expect(response.body.error).toBe('E-mail já cadastrado!');
+    });
+
+    describe('destroy', () => {
+      it('Must make athlete status 200 delete successfully.', async () => {
+        const { id } = await factory.create('Athlete');
+
+        const response = await request(app)
+          .delete(`/athletes/${id}`)
+          .send()
+          .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+        expect(response.status).toBe(200);
+      });
+
+      it('Should return a validation failure message.', async () => {
+        const response = await request(app)
+          .delete(`/athletes/a`)
+          .send()
+          .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+        expect(response.body.error).toBe('Falha na validação das informações.');
+      });
+
+      it('Should return message that athlete does not exist.', async () => {
+        const response = await request(app)
+          .delete(`/athletes/1`)
+          .send()
+          .set('Authentication', `Bearer ${await getCoordinatorSession()}`);
+
+        expect(response.body.error).toBe('Atleta não existe.');
+      });
     });
   });
 });

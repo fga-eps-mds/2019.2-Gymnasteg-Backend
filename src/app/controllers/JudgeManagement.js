@@ -93,7 +93,6 @@ module.exports = {
               'category_age',
               'date_event',
               'horary',
-              'was_voted',
             ],
             through: { attributes: [] },
             include: [

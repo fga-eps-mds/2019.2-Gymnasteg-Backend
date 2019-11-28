@@ -126,9 +126,6 @@ io.on('connection', async socket => {
         if (!votedStand) {
           return;
           // eslint-disable-next-line no-else-return
-        } else if (votedStand.was_voted) {
-          // Stand was already voted
-          return;
         }
 
         // Voting already happening
@@ -178,9 +175,6 @@ io.on('connection', async socket => {
         if (!votedStand) {
           return;
           // eslint-disable-next-line no-else-return
-        } else if (votedStand.was_voted) {
-          // Stand was already voted
-          return;
         }
 
         // Voting needs to be happening

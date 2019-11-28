@@ -100,7 +100,9 @@ io.on('connection', async socket => {
               athlete: {
                 id: votings[stand.id].id,
                 name: votings[stand.id].name,
-                sex: stand.sex_modality,
+                sex: stand.athletes.find(
+                  athlete => athlete.id === votings[stand.id].id
+                ).gender,
               },
             });
           }

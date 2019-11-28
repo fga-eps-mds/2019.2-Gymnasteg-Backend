@@ -152,6 +152,11 @@ io.on('connection', async socket => {
         emitSecondsRemaining();
 
         const votingCountdown = setInterval(() => {
+          if (typeof votings[voteSocket.stand] === 'undefined') {
+            clearInterval(votingCountdown);
+            return;
+          }
+
           secondsRemaining -= 1;
           emitSecondsRemaining();
 
